@@ -11,5 +11,6 @@ class application(App):
         for i in range (0,10):
             layout.add_widget(Button(text = 'button'))
         layout.add_widget(s)
-    
-       
+if __name__ == '__main__':
+   myApp = application()
+   myApp.run()
