@@ -6,18 +6,22 @@ from kivy.uix.button import Button
 from kivy.uix.slider import Slider
 from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
+from kivy.app import runTouchApp
 class application(App):
     def build(self):
-        layout = GridLayout(rows=1, spacing=10)
-        layout1 = GridLayout(rows=1, spacing=10)
-        layout2 = GridLayout(rows=1, spacing=10)
+        layout = GridLayout(cols=1, spacing=10, size_hint_y =None)
+        layout1 = GridLayout(cols=1, spacing=10, size_hint_y =None)
+        layout2 = GridLayout(cols=2, spacing=10, size_hint_y =None)
         s = Slider(min=-100, max=100, value=25, value_track=True, value_track_color=[0, 0.5, 1, 1])
-        for i in range (0,10):
-            layout2.add_widget(Button(text = 'button'))
-        layout1.add_widget(s)
-        root = ScrollView(size_hint=(0.2, None), bar_pos_x = 'bottom', scroll_type = ['content'], size=(Window.width, Window.height), bar_margin = 1, do_scroll_y = False, bar_color = [0, 1, 0, 1])
+        layout2.bind(minimum_height = layout2.setter('height'))
+        layout.bind(minimum_height = layout.setter('height'))
+        for i in range (101):
+            layout2.add_widget(Button(text = str(i), size_hint_y=None, height = 40))
+        #layout1.add_widget(s)
+        layout1.add_widget(Label(text = 'behold, scrolling'))
+        root = ScrollView(size_hint=(1, None), size=(Window.width, Window.height), scroll_type = ['bars'])
+        layout.add_widget(layout1)
         layout.add_widget(layout2)
-        #layout.add_widget(layout1)
         root.add_widget(layout)
         return root
 if __name__ == '__main__':
