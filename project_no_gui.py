@@ -14,6 +14,9 @@ def addbook(title, author, genre, id, copies):
 def removebook(id):
     cursor.execute('DELETE FROM availablebooks\nWHERE id = "' + id + '"')
     connection.commit()
+def addcopy(id):
+    cursor.execute('SELECT * FROM availablebooks)\nWHERE id = "' + id + '"')
+    book = cursor.fetchall()
 connection = sqlite3.connect("Currentinventorytest.db")
 cursor = connection.cursor()
 cursor.execute("CREATE TABLE IF NOT EXISTS availablebooks (title TEXT, author TEXT, genre TEXT, id TEXT, copies TEXT)")
