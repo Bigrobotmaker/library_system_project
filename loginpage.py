@@ -69,7 +69,7 @@ class application(App):
       cursor = connection.cursor()
       u = self.tinput2.text
       p = self.pinput2.text
-      cursor.execute('INSERT INTO Tempusers VALUES ("' + u + '", "' + p + '")')
+      cursor.execute('INSERT INTO users VALUES ("' + u + '", "' + p + '")')
 
 if __name__ == '__main__':
    myApp = application()
