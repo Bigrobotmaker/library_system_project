@@ -51,6 +51,9 @@ class application(App):
       self.mainpage.add_widget(Label(text = ''))
       self.mainpage.add_widget(Label(text = 'Welcome', font_size='40sp'))
       self.mainpage.add_widget(Label(text = ''))
+      self.mainpage.add_widget(Label(text = ''))
+      self.mainpage.add_widget(Label(text = 'This page is under sonstruction', font_size='30sp'))
+      self.mainpage.add_widget(Label(text = ''))
       self.screen3.add_widget(self.mainpage)
       self.sm.add_widget(self.screen3)
       return self.sm
