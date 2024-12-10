@@ -67,7 +67,7 @@ class application(App):
       self.bookadd.add_widget(self.genre)
       self.bookadd.add_widget(self.id)
       self.bookadd.add_widget(self.copies)
-      self.bookadd.add_widget(Button(text = 'add to database', on_press = databasefunctions.addbook(self.titleinput.text, self.author.text, self.genre.text, self.id.text, self.copies.text)))
+      self.bookadd.add_widget(Button(text = 'add to database', on_press = lambda x:self.addbook(self.titleinput.text, self.author.text, self.genre.text, self.id.text, self.copies.text)))
       self.bookadd.add_widget(Button(text = 'return to admin', on_press = self.bookaddswap))
       self.screenB.add_widget(self.bookadd)
       self.sm.add_widget(self.screenB)
@@ -96,6 +96,8 @@ class application(App):
          self.sm.current = 'bookadd_screen'
       elif self.sm.current == 'bookadd_screen':
          self.sm.current = 'admin_screen'
+   def addbook(self, newtitle,newauthor,newgenre,newid,newcopies):
+      databasefunctions.addbook(newtitle,newauthor,newgenre,newid,newcopies)
 
 if __name__ == '__main__':
    myApp = application()
