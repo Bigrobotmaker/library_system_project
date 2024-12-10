@@ -6,11 +6,9 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.screenmanager import ScreenManager, Screen
 import sqlite3
+import databasefunctions
 class application(App):
    def build(self):
-      connection = sqlite3.connect("Tempusers.db")
-      cursor = connection.cursor()
-      cursor.execute("CREATE TABLE IF NOT EXISTS users (username TEXT NOT NULL PRIMARY KEY, password TEXT NOT NULL)")
       self.sm = ScreenManager()
       self.layout = GridLayout(cols=1)
       self.layout1 = GridLayout(cols=1)
@@ -18,10 +16,12 @@ class application(App):
       self.registerlayout = GridLayout(cols=1)
       self.registerlayout1 = GridLayout(cols=1)
       self.registerlayout2 = GridLayout(cols=2)
+      self.bookadd = GridLayout(cols=2)
       self.mainpage = GridLayout(cols=3)
       self.screen1 = Screen(name = 'login_screen')
       self.screen2 = Screen(name = 'register_screen')
       self.screen3 = Screen(name = 'admin_screen')
+      self.screenB = Screen(name = 'bookadd_screen')
       self.layout1.add_widget(Label(text='Welcome to the library system, please enter your username and password to log in\nIf you do not have an account please click register to make one', font_size='20sp'))
       self.tinput = TextInput(multiline=False, hint_text = 'Username')
       self.pinput = TextInput(multiline=False, hint_text = 'Password')
@@ -51,11 +51,26 @@ class application(App):
       self.mainpage.add_widget(Label(text = ''))
       self.mainpage.add_widget(Label(text = 'Welcome', font_size='40sp'))
       self.mainpage.add_widget(Label(text = ''))
-      self.mainpage.add_widget(Label(text = ''))
-      self.mainpage.add_widget(Label(text = 'This page is under sonstruction', font_size='30sp'))
+      self.mainpage.add_widget(Button(text = 'Add a book', on_press = self.bookaddswap))
+      self.mainpage.add_widget(Button(text = 'This page is under construction'))
       self.mainpage.add_widget(Label(text = ''))
       self.screen3.add_widget(self.mainpage)
       self.sm.add_widget(self.screen3)
+      self.titleinput = TextInput(multiline=False, hint_text = 'Title')
+      self.author = TextInput(multiline=False, hint_text = 'Author')
+      self.genre = TextInput(multiline=False, hint_text = 'Genre')
+      self.id = TextInput(multiline=False, hint_text = 'ID')
+      self.copies = TextInput(multiline=False, hint_text = 'Number of copies')
+      self.bookadd.add_widget(Label(text = 'please add a new book here', font_size='40sp'))
+      self.bookadd.add_widget(self.titleinput)
+      self.bookadd.add_widget(self.author)
+      self.bookadd.add_widget(self.genre)
+      self.bookadd.add_widget(self.id)
+      self.bookadd.add_widget(self.copies)
+      self.bookadd.add_widget(Button(text = 'add to database', on_press = databasefunctions.addbook(self.titleinput.text, self.author.text, self.genre.text, self.id.text, self.copies.text)))
+      self.bookadd.add_widget(Button(text = 'return to admin', on_press = self.bookaddswap))
+      self.screenB.add_widget(self.bookadd)
+      self.sm.add_widget(self.screenB)
       return self.sm
    def registerswap(self, instance):
       if self.sm.current == 'login_screen':
@@ -63,6 +78,8 @@ class application(App):
       elif self.sm.current == 'register_screen':
          self.sm.current = 'login_screen'
    def logincheck(self, instance):
+      connection = sqlite3.connect("Tempusers.db")
+      cursor = connection.cursor()
       if self.tinput.text == 'Admin' and self.pinput.text == 'Password':
          self.sm.current = 'admin_screen'
       else:
@@ -70,9 +87,15 @@ class application(App):
    def register(self, instance):
       connection = sqlite3.connect("Tempusers.db")
       cursor = connection.cursor()
+      cursor.execute("CREATE TABLE IF NOT EXISTS users (username TEXT NOT NULL PRIMARY KEY, password TEXT NOT NULL)")
       u = self.tinput2.text
       p = self.pinput2.text
       cursor.execute('INSERT INTO users VALUES ("' + u + '", "' + p + '")')
+   def bookaddswap(self, instance):
+      if self.sm.current == 'admin_screen':
+         self.sm.current = 'bookadd_screen'
+      elif self.sm.current == 'bookadd_screen':
+         self.sm.current = 'admin_screen'
 
 if __name__ == '__main__':
    myApp = application()
