@@ -61,7 +61,8 @@ class application(App):
       self.genre = TextInput(multiline=False, hint_text = 'Genre')
       self.id = TextInput(multiline=False, hint_text = 'ID')
       self.copies = TextInput(multiline=False, hint_text = 'Number of copies')
-      self.bookadd.add_widget(Label(text = 'please add a new book here', font_size='40sp'))
+      self.returnlabel = Label(text = 'please add a new book here', font_size='20sp')
+      self.bookadd.add_widget(self.returnlabel)
       self.bookadd.add_widget(self.titleinput)
       self.bookadd.add_widget(self.author)
       self.bookadd.add_widget(self.genre)
@@ -78,9 +79,9 @@ class application(App):
       elif self.sm.current == 'register_screen':
          self.sm.current = 'login_screen'
    def logincheck(self, instance):
-      connection = sqlite3.connect("Tempusers.db")
-      cursor = connection.cursor()
       if self.tinput.text == 'Admin' and self.pinput.text == 'Password':
+         self.sm.current = 'admin_screen'
+      elif self.passcheck(self.tinput.text) == 'login success':
          self.sm.current = 'admin_screen'
       else:
          self.verifyL.text = "Login failed - username or password is incorrect"
@@ -91,13 +92,22 @@ class application(App):
       u = self.tinput2.text
       p = self.pinput2.text
       cursor.execute('INSERT INTO users VALUES ("' + u + '", "' + p + '")')
+      connection.commit()
    def bookaddswap(self, instance):
       if self.sm.current == 'admin_screen':
          self.sm.current = 'bookadd_screen'
       elif self.sm.current == 'bookadd_screen':
+         self.returnlabel.text = 'please add a new book here'
          self.sm.current = 'admin_screen'
    def addbook(self, newtitle,newauthor,newgenre,newid,newcopies):
-      databasefunctions.addbook(newtitle,newauthor,newgenre,newid,newcopies)
+      self.returnlabel.text = databasefunctions.addbook(newtitle,newauthor,newgenre,newid,newcopies)
+   def passcheck(self, username):
+      if databasefunctions.passcheck(username) == self.pinput.text:
+         return 'login success'
+      else:
+         return 'login failed'
+
+
 
 if __name__ == '__main__':
    myApp = application()
