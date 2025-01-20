@@ -18,3 +18,14 @@ def passcheck(username):
     password = cursor.fetchall()
     password = ','.join(password[0])
     return password
+def removebook(id):
+    connection = sqlite3.connect("Testinventory.db")
+    cursor = connection.cursor()
+    try:
+        cursor.execute('DELETE FROM inventory WHERE id = "' + id + '"')
+        connection.commit()
+        connection.close()
+    except:
+        connection.close()
+        return('ID is not in use')
+    return('book successfully deleted')

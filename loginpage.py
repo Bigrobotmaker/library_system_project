@@ -19,10 +19,12 @@ class application(App):
       self.bookadd = GridLayout(cols=2)
       self.mainpage = GridLayout(cols=3)
       self.mainpageS = GridLayout(cols=3)
+      self.removepage = GridLayout(cols=2)
       self.screen1 = Screen(name = 'login_screen')
       self.screen2 = Screen(name = 'register_screen')
       self.screen3 = Screen(name = 'admin_screen')
       self.screenB = Screen(name = 'bookadd_screen')
+      self.screenR = Screen(name = 'bookremove_screen')
       self.screenS = Screen(name = 'student_screen')
       self.layout1.add_widget(Label(text='Welcome to the library system, please enter your username and password to log in\nIf you do not have an account please click register to make one', font_size='20sp'))
       self.tinput = TextInput(multiline=False, hint_text = 'Username')
@@ -37,6 +39,7 @@ class application(App):
       self.layout.add_widget(self.layout2)
       self.screen1.add_widget(self.layout)
       self.sm.add_widget(self.screen1)
+
       self.registerlayout1.add_widget(Label(text='Please enter the username and password you would like to set'))
       self.tinput2 = TextInput(multiline=False, hint_text = 'Username')
       self.pinput2 = TextInput(multiline=False, hint_text = 'Password')
@@ -50,14 +53,16 @@ class application(App):
       self.registerlayout.add_widget(self.registerlayout2)
       self.screen2.add_widget(self.registerlayout)
       self.sm.add_widget(self.screen2)
+
       self.mainpage.add_widget(Label(text = ''))
       self.mainpage.add_widget(Label(text = 'Welcome', font_size='40sp'))
       self.mainpage.add_widget(Label(text = ''))
       self.mainpage.add_widget(Button(text = 'Add a book', on_press = self.bookaddswap))
-      self.mainpage.add_widget(Button(text = 'This page is under construction'))
+      self.mainpage.add_widget(Button(text = 'Remove a book', on_press = self.bookremoveswap))
       self.mainpage.add_widget(Label(text = ''))
       self.screen3.add_widget(self.mainpage)
       self.sm.add_widget(self.screen3)
+
       self.titleinput = TextInput(multiline=False, hint_text = 'Title')
       self.author = TextInput(multiline=False, hint_text = 'Author')
       self.genre = TextInput(multiline=False, hint_text = 'Genre')
@@ -74,6 +79,7 @@ class application(App):
       self.bookadd.add_widget(Button(text = 'return to admin', on_press = self.bookaddswap))
       self.screenB.add_widget(self.bookadd)
       self.sm.add_widget(self.screenB)
+
       self.mainpageS.add_widget(Label(text = ''))
       self.mainpageS.add_widget(Label(text = 'Welcome'))
       self.mainpageS.add_widget(Label(text = ''))
@@ -82,7 +88,18 @@ class application(App):
       self.mainpageS.add_widget(Button(text = 'take out a book'))
       self.screenS.add_widget(self.mainpageS)
       self.sm.add_widget(self.screenS)
+
+      self.removelabel = Label(text = 'Please remove a book here')
+      self.removepage.add_widget(self.removelabel)
+      self.Rid = TextInput(multiline=False, hint_text = 'The ID of the book you would like to remove')
+      self.removepage.add_widget(self.Rid)
+      self.removepage.add_widget(Button(text = 'remove book', on_press = lambda x:self.removebook(self.Rid.text)))
+      self.removepage.add_widget(Button(text = 'return to admin', on_press = self.bookremoveswap))
+      self.screenR.add_widget(self.removepage)
+      self.sm.add_widget(self.screenR)
+
       return self.sm
+   
    def registerswap(self, instance):
       if self.sm.current == 'login_screen':
          self.sm.current = 'register_screen'
@@ -109,14 +126,21 @@ class application(App):
       elif self.sm.current == 'bookadd_screen':
          self.returnlabel.text = 'please add a new book here'
          self.sm.current = 'admin_screen'
+   def bookremoveswap(self,instance):
+      if self.sm.current == 'admin_screen':
+         self.sm.current = 'bookremove_screen'
+      elif self.sm.current == 'bookremove_screen':
+         self.removelabel.text = 'please remove a book here'
+         self.sm.current = 'admin_screen'
    def addbook(self, newtitle,newauthor,newgenre,newid,newcopies):
       self.returnlabel.text = databasefunctions.addbook(newtitle,newauthor,newgenre,newid,newcopies)
+   def removebook(self, RID):
+      self.removelabel.text = databasefunctions.removebook(RID)
    def passcheck(self, username):
       if databasefunctions.passcheck(username) == self.pinput.text:
          return 'login success'
       else:
          return 'login failed'
-
 
 
 if __name__ == '__main__':
