@@ -18,10 +18,12 @@ class application(App):
       self.registerlayout2 = GridLayout(cols=2)
       self.bookadd = GridLayout(cols=2)
       self.mainpage = GridLayout(cols=3)
+      self.mainpageS = GridLayout(cols=3)
       self.screen1 = Screen(name = 'login_screen')
       self.screen2 = Screen(name = 'register_screen')
       self.screen3 = Screen(name = 'admin_screen')
       self.screenB = Screen(name = 'bookadd_screen')
+      self.screenS = Screen(name = 'student_screen')
       self.layout1.add_widget(Label(text='Welcome to the library system, please enter your username and password to log in\nIf you do not have an account please click register to make one', font_size='20sp'))
       self.tinput = TextInput(multiline=False, hint_text = 'Username')
       self.pinput = TextInput(multiline=False, hint_text = 'Password')
@@ -72,6 +74,14 @@ class application(App):
       self.bookadd.add_widget(Button(text = 'return to admin', on_press = self.bookaddswap))
       self.screenB.add_widget(self.bookadd)
       self.sm.add_widget(self.screenB)
+      self.mainpageS.add_widget(Label(text = ''))
+      self.mainpageS.add_widget(Label(text = 'Welcome'))
+      self.mainpageS.add_widget(Label(text = ''))
+      self.mainpageS.add_widget(Label(text = ''))
+      self.mainpageS.add_widget(Button(text = 'This page is under construction'))
+      self.mainpageS.add_widget(Button(text = 'take out a book'))
+      self.screenS.add_widget(self.mainpageS)
+      self.sm.add_widget(self.screenS)
       return self.sm
    def registerswap(self, instance):
       if self.sm.current == 'login_screen':
@@ -82,7 +92,7 @@ class application(App):
       if self.tinput.text == 'Admin' and self.pinput.text == 'Password':
          self.sm.current = 'admin_screen'
       elif self.passcheck(self.tinput.text) == 'login success':
-         self.sm.current = 'admin_screen'
+         self.sm.current = 'student_screen'
       else:
          self.verifyL.text = "Login failed - username or password is incorrect"
    def register(self, instance):
