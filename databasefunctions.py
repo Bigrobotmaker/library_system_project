@@ -29,3 +29,16 @@ def removebook(id):
         connection.close()
         return('ID is not in use')
     return('book successfully deleted')
+def register(u,p,c):
+    connection = sqlite3.connect("Tempusers.db")
+    cursor = connection.cursor()
+    if p == c:
+        try:
+            cursor.execute("CREATE TABLE IF NOT EXISTS users (username TEXT NOT NULL PRIMARY KEY, password TEXT NOT NULL)")
+            cursor.execute('INSERT INTO users VALUES ("' + u + '", "' + p + '")')
+            connection.commit()
+        except:
+            return('username in use')
+        return('registration successful')
+    else:
+        return('passwords do not match')

@@ -20,15 +20,17 @@ class application(App):
       self.mainpage = GridLayout(cols=3)
       self.mainpageS = GridLayout(cols=3)
       self.removepage = GridLayout(cols=2)
+      self.borrowpage = GridLayout(cols=2)
       self.screen1 = Screen(name = 'login_screen')
       self.screen2 = Screen(name = 'register_screen')
       self.screen3 = Screen(name = 'admin_screen')
       self.screenB = Screen(name = 'bookadd_screen')
       self.screenR = Screen(name = 'bookremove_screen')
       self.screenS = Screen(name = 'student_screen')
+      self.screenBR = Screen(name = 'borrow_screen')
       self.layout1.add_widget(Label(text='Welcome to the library system, please enter your username and password to log in\nIf you do not have an account please click register to make one', font_size='20sp'))
       self.tinput = TextInput(multiline=False, hint_text = 'Username')
-      self.pinput = TextInput(multiline=False, hint_text = 'Password')
+      self.pinput = TextInput(multiline=False, hint_text = 'Password', password = True)
       self.verifyL = Label(text = '')
       self.layout1.add_widget(self.verifyL)
       self.layout1.add_widget(self.tinput)
@@ -42,11 +44,13 @@ class application(App):
 
       self.registerlayout1.add_widget(Label(text='Please enter the username and password you would like to set'))
       self.tinput2 = TextInput(multiline=False, hint_text = 'Username')
-      self.pinput2 = TextInput(multiline=False, hint_text = 'Password')
+      self.pinput2 = TextInput(multiline=False, hint_text = 'Password', password = True)
+      self.pcinput = TextInput(multiline=False, hint_text = 'confirm your password', password = True)
       self.verifyR = Label(text = '')
       self.registerlayout1.add_widget(self.verifyR)
       self.registerlayout1.add_widget(self.tinput2)
       self.registerlayout1.add_widget(self.pinput2)
+      self.registerlayout1.add_widget(self.pcinput)
       self.registerlayout2.add_widget(Button(text ='Register', on_press = self.register))
       self.registerlayout2.add_widget(Button(text = 'Back to login', on_press = self.registerswap))
       self.registerlayout.add_widget(self.registerlayout1)
@@ -59,7 +63,7 @@ class application(App):
       self.mainpage.add_widget(Label(text = ''))
       self.mainpage.add_widget(Button(text = 'Add a book', on_press = self.bookaddswap))
       self.mainpage.add_widget(Button(text = 'Remove a book', on_press = self.bookremoveswap))
-      self.mainpage.add_widget(Label(text = ''))
+      self.mainpage.add_widget(Button(text = 'Log out', on_press = self.logout))
       self.screen3.add_widget(self.mainpage)
       self.sm.add_widget(self.screen3)
 
@@ -83,9 +87,9 @@ class application(App):
       self.mainpageS.add_widget(Label(text = ''))
       self.mainpageS.add_widget(Label(text = 'Welcome'))
       self.mainpageS.add_widget(Label(text = ''))
-      self.mainpageS.add_widget(Label(text = ''))
+      self.mainpageS.add_widget(Button(text = 'Log out', on_press = self.logout))
       self.mainpageS.add_widget(Button(text = 'This page is under construction'))
-      self.mainpageS.add_widget(Button(text = 'take out a book'))
+      self.mainpageS.add_widget(Button(text = 'take out a book', on_press = self.borrowswap))
       self.screenS.add_widget(self.mainpageS)
       self.sm.add_widget(self.screenS)
 
@@ -98,6 +102,17 @@ class application(App):
       self.screenR.add_widget(self.removepage)
       self.sm.add_widget(self.screenR)
 
+      self.borrowconfirm = Label(text = '')
+      self.BID = TextInput(multiline=False, hint_text = 'The ID of the book you would like to borrow')
+      self.Returndate = TextInput(multiline=False, hint_text = 'when would you like to return the book? (write as day,month,year)')
+      self.borrowpage.add_widget(Label(text = 'please enter the ID of the book you would like to take out'))
+      self.borrowpage.add_widget(self.borrowconfirm)
+      self.borrowpage.add_widget(self.BID)
+      self.borrowpage.add_widget(self.Returndate)
+      self.borrowpage.add_widget(Button(text = 'back to main page', on_press = self.borrowswap))
+      self.borrowpage.add_widget(Button(text = 'request to borrow the book', on_press = lambda x:self.borrow(self.BID.text, self.Returndate.text)))
+      self.screenBR.add_widget(self.borrowpage)
+      self.sm.add_widget(self.screenBR)
       return self.sm
    
    def registerswap(self, instance):
@@ -113,13 +128,10 @@ class application(App):
       else:
          self.verifyL.text = "Login failed - username or password is incorrect"
    def register(self, instance):
-      connection = sqlite3.connect("Tempusers.db")
-      cursor = connection.cursor()
-      cursor.execute("CREATE TABLE IF NOT EXISTS users (username TEXT NOT NULL PRIMARY KEY, password TEXT NOT NULL)")
       u = self.tinput2.text
       p = self.pinput2.text
-      cursor.execute('INSERT INTO users VALUES ("' + u + '", "' + p + '")')
-      connection.commit()
+      c = self.pcinput.text
+      self.verifyR.text = databasefunctions.register(u,p,c)
    def bookaddswap(self, instance):
       if self.sm.current == 'admin_screen':
          self.sm.current = 'bookadd_screen'
@@ -132,6 +144,11 @@ class application(App):
       elif self.sm.current == 'bookremove_screen':
          self.removelabel.text = 'please remove a book here'
          self.sm.current = 'admin_screen'
+   def borrowswap(self,instance):
+      if self.sm.current == 'student_screen':
+         self.sm.current = 'borrow_screen'
+      elif self.sm.current == 'borrow_screen':
+         self.sm.current = 'student_screen'
    def addbook(self, newtitle,newauthor,newgenre,newid,newcopies):
       self.returnlabel.text = databasefunctions.addbook(newtitle,newauthor,newgenre,newid,newcopies)
    def removebook(self, RID):
@@ -141,6 +158,12 @@ class application(App):
          return 'login success'
       else:
          return 'login failed'
+   def logout(self, instance):
+      self.sm.current = 'login_screen'
+      self.tinput.text = ''
+      self.pinput.text = ''
+   def borrow(self, ID, Date):
+      pass
 
 
 if __name__ == '__main__':
