@@ -28,7 +28,7 @@ class application(App):
       self.screenR = Screen(name = 'bookremove_screen')
       self.screenS = Screen(name = 'student_screen')
       self.screenBR = Screen(name = 'borrow_screen')
-      self.layout1.add_widget(Label(text='Welcome to the library system, please enter your username and password to log in\nIf you do not have an account please click register to make one', font_size='20sp'))
+      self.layout1.add_widget(Label(text='Welcome to the OLA library system, please enter your username and password to log in\nIf you do not have an account please click register to make one', font_size='20sp'))
       self.tinput = TextInput(multiline=False, hint_text = 'Username')
       self.pinput = TextInput(multiline=False, hint_text = 'Password', password = True)
       self.verifyL = Label(text = '')
@@ -110,7 +110,7 @@ class application(App):
       self.borrowpage.add_widget(self.BID)
       self.borrowpage.add_widget(self.Returndate)
       self.borrowpage.add_widget(Button(text = 'back to main page', on_press = self.borrowswap))
-      self.borrowpage.add_widget(Button(text = 'request to borrow the book', on_press = lambda x:self.borrow(self.BID.text, self.Returndate.text)))
+      self.borrowpage.add_widget(Button(text = 'request to borrow the book', on_press = lambda x:self.borrow(self.BID.text, self.Returndate.text, self.tinput.text)))
       self.screenBR.add_widget(self.borrowpage)
       self.sm.add_widget(self.screenBR)
       return self.sm
@@ -118,8 +118,13 @@ class application(App):
    def registerswap(self, instance):
       if self.sm.current == 'login_screen':
          self.sm.current = 'register_screen'
+         self.pinput.text = ''
       elif self.sm.current == 'register_screen':
+         self.tinput2.text = ''
+         self.pinput2.text = ''
+         self.pcinput.text = ''
          self.sm.current = 'login_screen'
+
    def logincheck(self, instance):
       if self.tinput.text == 'Admin' and self.pinput.text == 'Password':
          self.sm.current = 'admin_screen'
@@ -160,10 +165,9 @@ class application(App):
          return 'login failed'
    def logout(self, instance):
       self.sm.current = 'login_screen'
-      self.tinput.text = ''
       self.pinput.text = ''
-   def borrow(self, ID, Date):
-      pass
+   def borrow(self, ID, Date, user):
+      databasefunctions.borrow(ID, Date, user)
 
 
 if __name__ == '__main__':
