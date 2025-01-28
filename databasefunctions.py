@@ -46,17 +46,10 @@ def borrow(id, date, user):
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS Borrowed (title TEXT NOT NULL, author TEXT NOT NULL, genre TEXT NOT NULL, id TEXT NOT NULL PRIMARY KEY, user TEXT NOT NULL, due TEXT NOT NULL)")
-    cursor.execute('SELECT title FROM inventory\nWHERE id = "' + id + '"')
-    title = cursor.fetchall()
-    title = ','.join(title[0])
-    cursor.execute('SELECT author FROM inventory\nWHERE id = "' + id + '"')
-    author = cursor.fetchall
-    author = ','.join(str(author))
-    cursor.execute('SELECT genre FROM inventory\nWHERE id = "' + id + '"')
-    genre = cursor.fetchall
-    genre = ','.join(str(genre))
-    print(title)
-    print(author)
-    print(genre)
+    cursor.execute('SELECT title, author, genre FROM inventory\nWHERE id = "' + id + '"')
+    info = cursor.fetchall()
+    title = (info[0])[0]
+    author = (info[0])[1]
+    genre = (info[0])[2]
     cursor.execute('INSERT INTO borrowed VALUES ("' + title + '", "' + author + '", "' + genre + '", "' + id + '", "' + user + '", "' + date + '")')
     return("borrowing successful")
