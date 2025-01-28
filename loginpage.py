@@ -167,7 +167,7 @@ class application(App):
       self.sm.current = 'login_screen'
       self.pinput.text = ''
    def borrow(self, ID, Date, user):
-      databasefunctions.borrow(ID, Date, user)
+      self.borrowconfirm.text = databasefunctions.borrow(ID, Date, user)
 
 
 if __name__ == '__main__':

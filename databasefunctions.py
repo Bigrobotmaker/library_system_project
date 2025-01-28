@@ -46,10 +46,19 @@ def borrow(id, date, user):
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS Borrowed (title TEXT NOT NULL, author TEXT NOT NULL, genre TEXT NOT NULL, id TEXT NOT NULL PRIMARY KEY, user TEXT NOT NULL, due TEXT NOT NULL)")
-    cursor.execute('SELECT title, author, genre FROM inventory\nWHERE id = "' + id + '"')
-    info = cursor.fetchall()
-    title = (info[0])[0]
-    author = (info[0])[1]
-    genre = (info[0])[2]
-    cursor.execute('INSERT INTO borrowed VALUES ("' + title + '", "' + author + '", "' + genre + '", "' + id + '", "' + user + '", "' + date + '")')
-    return("borrowing successful")
+    try:
+        cursor.execute('SELECT title, author, genre, copies FROM inventory\nWHERE id = "' + id + '"')
+        info = cursor.fetchall()
+        title = (info[0])[0]
+        author = (info[0])[1]
+        genre = (info[0])[2]
+        if int((info[0])[3]) > 0:
+            cursor.execute('INSERT INTO borrowed VALUES ("' + title + '", "' + author + '", "' + genre + '", "' + id + '", "' + user + '", "' + date + '")')
+            cursor.execute('UPDATE inventory SET copies ="' + str(int((info[0])[3]) - 1) + '" WHERE id = "' + id + '"')
+            connection.commit()
+            return("borrowing successful")
+        else:
+            return("no copies available, try again later")
+    except:
+        connection.close()
+        return('ID not recognised')
