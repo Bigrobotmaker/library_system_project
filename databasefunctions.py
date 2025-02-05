@@ -12,11 +12,12 @@ def addbook(title, author, genre, id, copies):
         return('ID in use')
     return('book successfully added')
 def passcheck(username):
-    connection = sqlite3.connect("Tempusers.db")
+    connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
     cursor.execute('SELECT password FROM users\nWHERE username = "' + username + '"')
     password = cursor.fetchall()
     password = ','.join(password[0])
+    cursor.execute('UPDATE users SET loggedin = "True" WHERE username = "' + username + '"')
     return password
 def removebook(id):
     connection = sqlite3.connect("Testinventory.db")
@@ -30,25 +31,29 @@ def removebook(id):
         return('ID is not in use')
     return('book successfully deleted')
 def register(u,p,c):
-    connection = sqlite3.connect("Tempusers.db")
+    connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
     if p == c:
         try:
-            cursor.execute("CREATE TABLE IF NOT EXISTS users (username TEXT NOT NULL PRIMARY KEY, password TEXT NOT NULL)")
-            cursor.execute('INSERT INTO users VALUES ("' + u + '", "' + p + '")')
+            cursor.execute("CREATE TABLE IF NOT EXISTS users (username TEXT NOT NULL PRIMARY KEY, password TEXT NOT NULL, loggedin TEXT NOT NULL)")
+            cursor.execute('INSERT INTO users VALUES ("' + u + '", "' + p + '", "' + "False" + '")')
             connection.commit()
         except:
             return('username in use')
         return('registration successful')
     else:
         return('passwords do not match')
-def borrow(id, date, user):
+def borrow(id, date):
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
-    idcursor = connection.cursor
+    idcursor = connection.cursor()
+    usercursor = connection.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS Borrowed (title TEXT NOT NULL, author TEXT NOT NULL, genre TEXT NOT NULL, id TEXT NOT NULL, user TEXT NOT NULL, due TEXT NOT NULL, borrowid TEXT NOT NULL PRIMARY KEY)")
     try:
         cursor.execute('SELECT title, author, genre, copies FROM inventory\nWHERE id = "' + id + '"')
+        usercursor.execute('SELECT username FROM users WHERE loggedin = "' + "True" + '"')
+        username = usercursor.fetchall
+        username = (username[0])[0]
         info = cursor.fetchall()
         title = (info[0])[0]
         author = (info[0])[1]
@@ -59,7 +64,7 @@ def borrow(id, date, user):
         for i in borrowed:
             borrowid = borrowid + 1
         if int((info[0])[3]) > 0:
-            cursor.execute('INSERT INTO borrowed VALUES ("' + title + '", "' + author + '", "' + genre + '", "' + id + '", "' + user + '", "' + date + '", "' + str(borrowid) + '")')
+            cursor.execute('INSERT INTO borrowed VALUES ("' + title + '", "' + author + '", "' + genre + '", "' + id + '", "' + username + '", "' + date + '", "' + str(borrowid) + '")')
             cursor.execute('UPDATE inventory SET copies ="' + str(int((info[0])[3]) - 1) + '" WHERE id = "' + id + '"')
             connection.commit()
             connection.close()
@@ -69,3 +74,11 @@ def borrow(id, date, user):
     except:
         connection.close()
         return('ID not recognised')
+def logoutset():
+    connection = sqlite3.connect("Testinventory.db")
+    cursorget = connection.cursor()
+    cursorupdate = connection.cursor()
+    cursorget.execute('SELECT username FROM users\nWHERE loggedin = "' + "True" + '"')
+    username = cursorget.fetchall
+    username = (username[0])[0]
+    cursorupdate.execute('UPDATE users SET loggedin = "False" WHERE username = "' + username + '"')
