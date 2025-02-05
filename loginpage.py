@@ -166,8 +166,10 @@ class application(App):
    def logout(self, instance):
       self.sm.current = 'login_screen'
       self.pinput.text = ''
-   def borrow(self, ID, Date, user):
-      self.borrowconfirm.text = databasefunctions.borrow(ID, Date, user)
+      self.pinput.text = ''
+      databasefunctions.logoutset()
+   def borrow(self, ID, Date):
+      self.borrowconfirm.text = databasefunctions.borrow(ID, Date)
 
 
 if __name__ == '__main__':
