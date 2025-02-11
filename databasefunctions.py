@@ -65,11 +65,15 @@ def borrow(id, date):
         title = (info[0])[0]
         author = (info[0])[1]
         genre = (info[0])[2]
-        idcursor.execute('SELECT * FROM Borrowed')
+        idcursor.execute('SELECT id FROM Borrowed')
         borrowed = idcursor.fetchall()
         borrowid = 0
         for i in borrowed:
-            borrowid = borrowid + (borrowed[0])[i]
+            try:
+                if int((borrowed[0])[i]) >= borrowid:
+                    borrowid = int((borrowed[0])[i]) + 1
+            except:
+                borrowid = 1
         if int((info[0])[3]) > 0:
             cursor.execute('INSERT INTO borrowed VALUES ("' + title + '", "' + author + '", "' + genre + '", "' + id + '", "' + username + '", "' + date + '", "' + str(borrowid) + '")')
             cursor.execute('UPDATE inventory SET copies ="' + str(int((info[0])[3]) - 1) + '" WHERE id = "' + id + '"')

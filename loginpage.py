@@ -21,6 +21,7 @@ class application(App):
       self.mainpageS = GridLayout(cols=3)
       self.removepage = GridLayout(cols=2)
       self.borrowpage = GridLayout(cols=2)
+      self.returnpage = GridLayout(cols=2)
       self.screen1 = Screen(name = 'login_screen')
       self.screen2 = Screen(name = 'register_screen')
       self.screen3 = Screen(name = 'admin_screen')
@@ -28,6 +29,7 @@ class application(App):
       self.screenR = Screen(name = 'bookremove_screen')
       self.screenS = Screen(name = 'student_screen')
       self.screenBR = Screen(name = 'borrow_screen')
+      self.REscreen = Screen(name = 'return_screen')
       self.layout1.add_widget(Label(text='Welcome to the OLA library system, please enter your username and password to log in\nIf you do not have an account please click register to make one', font_size='20sp'))
       self.tinput = TextInput(multiline=False, hint_text = 'Username')
       self.pinput = TextInput(multiline=False, hint_text = 'Password', password = True)
@@ -88,8 +90,8 @@ class application(App):
       self.mainpageS.add_widget(Label(text = 'Welcome'))
       self.mainpageS.add_widget(Label(text = ''))
       self.mainpageS.add_widget(Button(text = 'Log out', on_press = self.logout))
-      self.mainpageS.add_widget(Button(text = 'This page is under construction'))
-      self.mainpageS.add_widget(Button(text = 'take out a book', on_press = self.borrowswap))
+      self.mainpageS.add_widget(Button(text = 'Return a book', on_press = self.returnswap))
+      self.mainpageS.add_widget(Button(text = 'Borrow a book', on_press = self.borrowswap))
       self.screenS.add_widget(self.mainpageS)
       self.sm.add_widget(self.screenS)
 
@@ -113,6 +115,15 @@ class application(App):
       self.borrowpage.add_widget(Button(text = 'request to borrow the book', on_press = lambda x:self.borrow(self.BID.text, self.Returndate.text)))
       self.screenBR.add_widget(self.borrowpage)
       self.sm.add_widget(self.screenBR)
+
+      self.returnconfirm = Label(text = '')
+      self.title = TextInput(multiline=False, hint_text = 'The title of the book you would like to borrow')
+      self.returnpage.add_widget(Label(text = 'please enter the title of the book you are returning'))
+      self.returnpage.add_widget(self.returnconfirm)
+      self.returnpage.add_widget(self.title)
+      self.returnpage.add_widget(Label(text = ''))
+      self.returnpage.add_widget(Button(text = 'back to main page', on_press = self.returnswap))
+      self.returnpage.add_widget(Button(text = 'return book', on_press = lambda x:self.returnbook(self.title.text)))
       return self.sm
    
    def registerswap(self, instance):
@@ -154,6 +165,11 @@ class application(App):
          self.sm.current = 'borrow_screen'
       elif self.sm.current == 'borrow_screen':
          self.sm.current = 'student_screen'
+   def returnswap(self, instance):
+      if self.sm.current == 'student_screen':
+         self.sm.current = 'return_screen'
+      if self.sm.current == 'return_screen':
+         self.sm.current = 'student_screen'
    def addbook(self, newtitle,newauthor,newgenre,newid,newcopies):
       self.returnlabel.text = databasefunctions.addbook(newtitle,newauthor,newgenre,newid,newcopies)
    def removebook(self, RID):
@@ -170,6 +186,8 @@ class application(App):
       databasefunctions.logoutset()
    def borrow(self, ID, Date):
       self.borrowconfirm.text = databasefunctions.borrow(ID, Date)
+   def returnbook(self,title):
+      self.returnconfirm.text = databasefunctions.borrow(Title)
 
 
 if __name__ == '__main__':
