@@ -110,7 +110,7 @@ class application(App):
       self.borrowpage.add_widget(self.BID)
       self.borrowpage.add_widget(self.Returndate)
       self.borrowpage.add_widget(Button(text = 'back to main page', on_press = self.borrowswap))
-      self.borrowpage.add_widget(Button(text = 'request to borrow the book', on_press = lambda x:self.borrow(self.BID.text, self.Returndate.text, self.tinput.text)))
+      self.borrowpage.add_widget(Button(text = 'request to borrow the book', on_press = lambda x:self.borrow(self.BID.text, self.Returndate.text)))
       self.screenBR.add_widget(self.borrowpage)
       self.sm.add_widget(self.screenBR)
       return self.sm
