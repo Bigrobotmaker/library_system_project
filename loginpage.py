@@ -187,7 +187,7 @@ class application(App):
    def borrow(self, ID, Date):
       self.borrowconfirm.text = databasefunctions.borrow(ID, Date)
    def returnbook(self,title):
-      self.returnconfirm.text = databasefunctions.borrow(Title)
+      self.returnconfirm.text = databasefunctions.returnbook(title)
 
 
 if __name__ == '__main__':

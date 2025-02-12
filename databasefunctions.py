@@ -93,3 +93,24 @@ def logoutset():
     username = cursorget.fetchall()
     username = (username[0])[0]
     cursorupdate.execute('UPDATE users SET loggedin = "False" WHERE username = "' + username + '"')
+def returnbook(title):
+    try:
+        connection = sqlite3.connect("Testinventory.db")
+        cursor = connection.cursor()
+        usercursor = connection.cursor()
+        copycursor = connection.cursor()
+        usercursor.execute('SELECT username FROM users WHERE loggedin = "' + "True" + '"')
+        name = usercursor.fetchall()
+        uname = (name[0])[0]
+        cursor.execute('SELECT borrowid FROM borrowed WHERE title = "' + title + '" AND user = "' + uname + '"')
+        id = cursor.fetchall()
+        num = len(id)
+        if num == 1:
+            cursor.execute('DELETE FROM borrowed WHERE title = "' + title + '" AND user = "' + uname + '"')
+        else:
+            cursor.execute('DELETE FROM borrowed WHERE title = "' + title + '" AND user = "' + uname + '" AND borrowid = "' + (id[0])[0] + '"')
+        copycursor.execute('SELECT id FROM inventory\nWHERE title = "' + title + '"')
+        ids = copycursor.fetchall
+    except:
+        connection.close()
+        return('You have not borrowed a book with that title')
