@@ -117,13 +117,15 @@ class application(App):
       self.sm.add_widget(self.screenBR)
 
       self.returnconfirm = Label(text = '')
-      self.title = TextInput(multiline=False, hint_text = 'The title of the book you would like to borrow')
+      self.REtitleinput = TextInput(multiline=False, hint_text = 'The title of the book you would like to return')
       self.returnpage.add_widget(Label(text = 'please enter the title of the book you are returning'))
       self.returnpage.add_widget(self.returnconfirm)
-      self.returnpage.add_widget(self.title)
+      self.returnpage.add_widget(self.REtitleinput)
       self.returnpage.add_widget(Label(text = ''))
       self.returnpage.add_widget(Button(text = 'back to main page', on_press = self.returnswap))
-      self.returnpage.add_widget(Button(text = 'return book', on_press = lambda x:self.returnbook(self.title.text)))
+      self.returnpage.add_widget(Button(text = 'return book', on_press = lambda x:self.returnbook(self.REtitleinput.text)))
+      self.REscreen.add_widget(self.returnpage)
+      self.sm.add_widget(self.REscreen)
       return self.sm
    
    def registerswap(self, instance):
@@ -168,7 +170,7 @@ class application(App):
    def returnswap(self, instance):
       if self.sm.current == 'student_screen':
          self.sm.current = 'return_screen'
-      if self.sm.current == 'return_screen':
+      elif self.sm.current == 'return_screen':
          self.sm.current = 'student_screen'
    def addbook(self, newtitle,newauthor,newgenre,newid,newcopies):
       self.returnlabel.text = databasefunctions.addbook(newtitle,newauthor,newgenre,newid,newcopies)

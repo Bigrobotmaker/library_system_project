@@ -109,8 +109,13 @@ def returnbook(title):
             cursor.execute('DELETE FROM borrowed WHERE title = "' + title + '" AND user = "' + uname + '"')
         else:
             cursor.execute('DELETE FROM borrowed WHERE title = "' + title + '" AND user = "' + uname + '" AND borrowid = "' + (id[0])[0] + '"')
-        copycursor.execute('SELECT id FROM inventory\nWHERE title = "' + title + '"')
-        ids = copycursor.fetchall
+        copycursor.execute('SELECT id, copies FROM inventory\nWHERE title = "' + title + '"')
+        ids = copycursor.fetchall()
+        bookid = (ids[0])[0]
+        cursor.execute('UPDATE inventory SET copies ="' + str(int((ids[0])[1]) - 1) + '" WHERE id = "' + bookid + '"')
+        connection.commit()
+        connection.close()
+        return('Return successful')
     except:
         connection.close()
         return('You have not borrowed a book with that title')
