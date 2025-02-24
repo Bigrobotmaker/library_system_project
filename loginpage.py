@@ -130,6 +130,16 @@ class application(App):
       self.REscreen.add_widget(self.returnpage)
       self.sm.add_widget(self.REscreen)
       
+      self.idinput = TextInput(multiline = False, hint_text = 'the id of the book you would like to alter')
+      self.copyinput =TextInput(multiline = False, hint_text = 'the number of copies of the book that the library has')
+      self.copyconfirm = Label(text = '')
+      self.copypage.add_widget(Label(text = 'please enter the ID of the book and the number of copies you want to change it to, this automaticaly updates when books are borrowed and returned'))
+      self.copypage.add_widget(self.copyconfirm)
+      self.copypage.add_widget(self.idinput)
+      self.copypage.add_widget(self.copyinput)
+      self.returnpage.add_widget(Button(text = 'back to main page', on_press = self.copyswap))
+      self.returnpage.add_widget(Button(text = 'change number of copies', on_press = self.changecopies))
+
       return self.sm
    
    def registerswap(self, instance):
