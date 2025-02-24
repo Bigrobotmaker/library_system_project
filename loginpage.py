@@ -31,7 +31,7 @@ class application(App):
       self.screenS = Screen(name = 'student_screen')
       self.screenBR = Screen(name = 'borrow_screen')
       self.REscreen = Screen(name = 'return_screen')
-      self.COscreen = Screen(name = 'Copies screen')
+      self.COscreen = Screen(name = 'copies_screen')
       self.layout1.add_widget(Label(text='Welcome to the OLA library system, please enter your username and password to log in\nIf you do not have an account please click register to make one', font_size='20sp'))
       self.tinput = TextInput(multiline=False, hint_text = 'Username')
       self.pinput = TextInput(multiline=False, hint_text = 'Password', password = True)
@@ -68,6 +68,7 @@ class application(App):
       self.mainpage.add_widget(Button(text = 'Add a book', on_press = self.bookaddswap))
       self.mainpage.add_widget(Button(text = 'Remove a book', on_press = self.bookremoveswap))
       self.mainpage.add_widget(Button(text = 'Log out', on_press = self.logout))
+      self.mainpage.add_widget(Button(text = 'Change the number of copies a book has', on_press = self.copyswap))
       self.screen3.add_widget(self.mainpage)
       self.sm.add_widget(self.screen3)
 
@@ -128,6 +129,7 @@ class application(App):
       self.returnpage.add_widget(Button(text = 'return book', on_press = lambda x:self.returnbook(self.REtitleinput.text)))
       self.REscreen.add_widget(self.returnpage)
       self.sm.add_widget(self.REscreen)
+      
       return self.sm
    
    def registerswap(self, instance):
@@ -139,6 +141,12 @@ class application(App):
          self.pinput2.text = ''
          self.pcinput.text = ''
          self.sm.current = 'login_screen'
+
+   def copyswap(self, instance):
+      if self.sm.current == 'admin_screen':
+         self.sm.current = 'copies_screen'
+      elif self.sm.current == 'copies_screen':
+         self.sm.current = 'admin_screen'
 
    def logincheck(self, instance):
       if self.tinput.text == 'Admin' and self.pinput.text == 'Password':
