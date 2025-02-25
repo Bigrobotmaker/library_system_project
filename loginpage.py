@@ -133,12 +133,14 @@ class application(App):
       self.idinput = TextInput(multiline = False, hint_text = 'the id of the book you would like to alter')
       self.copyinput =TextInput(multiline = False, hint_text = 'the number of copies of the book that the library has')
       self.copyconfirm = Label(text = '')
-      self.copypage.add_widget(Label(text = 'please enter the ID of the book and the number of copies you want to change it to, this automaticaly updates when books are borrowed and returned'))
+      self.copypage.add_widget(Label(text = 'please enter the ID of the book and the number of copies you want to change it to\nthis automaticaly updates when books are borrowed and returned'))
       self.copypage.add_widget(self.copyconfirm)
       self.copypage.add_widget(self.idinput)
       self.copypage.add_widget(self.copyinput)
-      self.returnpage.add_widget(Button(text = 'back to main page', on_press = self.copyswap))
-      self.returnpage.add_widget(Button(text = 'change number of copies', on_press = self.changecopies))
+      self.copypage.add_widget(Button(text = 'back to main page', on_press = self.copyswap))
+      self.copypage.add_widget(Button(text = 'change number of copies', on_press = lambda x:self.changecopies(self.idinput.text, self.copyinput.text)))
+      self.COscreen.add_widget(self.copypage)
+      self.sm.add_widget(self.COscreen)
 
       return self.sm
    
@@ -210,7 +212,8 @@ class application(App):
       self.borrowconfirm.text = databasefunctions.borrow(ID, Date)
    def returnbook(self,title):
       self.returnconfirm.text = databasefunctions.returnbook(title)
-
+   def changecopies(self, ID, Copies):
+      self.copyconfirm.text = databasefunctions.changecopies(ID, Copies)
 
 if __name__ == '__main__':
    myApp = application()

@@ -119,3 +119,11 @@ def returnbook(title):
     except:
         connection.close()
         return('You have not borrowed a book with that title')
+def changecopies(ID, Copies):
+    connection = sqlite3.connect("Testinventory.db")
+    cursor = connection.cursor()
+    try:
+        cursor.execute('UPDATE inventory SET copies = ' + Copies + ' WHERE id = "' + ID + '"')
+    except:
+        return('Error, ID is not in inventory')
+    return('inventory succesfully updated')
