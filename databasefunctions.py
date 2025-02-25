@@ -1,4 +1,6 @@
 import sqlite3
+import datetime
+from datetime import date
 def addbook(title, author, genre, id, copies):
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
@@ -55,7 +57,8 @@ def borrow(id, date):
     cursor = connection.cursor()
     idcursor = connection.cursor()
     usercursor = connection.cursor()
-    cursor.execute("CREATE TABLE IF NOT EXISTS Borrowed (title TEXT NOT NULL, author TEXT NOT NULL, genre TEXT NOT NULL, id TEXT NOT NULL, user TEXT NOT NULL, due TEXT NOT NULL, borrowid TEXT NOT NULL PRIMARY KEY)")
+    cursor.execute("DROP Table Borrowed")
+    cursor.execute("CREATE TABLE IF NOT EXISTS Borrowed (title TEXT NOT NULL, author TEXT NOT NULL, genre TEXT NOT NULL, id TEXT NOT NULL, user TEXT NOT NULL, dateout DATE NOT NULL, due DATE NOT NULL, borrowid TEXT NOT NULL PRIMARY KEY)")
     try:
         cursor.execute('SELECT title, author, genre, copies FROM inventory\nWHERE id = "' + id + '"')
         usercursor.execute('SELECT username FROM users WHERE loggedin = "' + "True" + '"')
@@ -74,8 +77,11 @@ def borrow(id, date):
                     borrowid = int((borrowed[0])[i]) + 1
             except:
                 borrowid = 1
+        dateout = date.split(',')
+        dateout2 =(dateout[0] + '-' + dateout[1] + '-' + dateout[2])
+        today = datetime.date.today()
         if int((info[0])[3]) > 0:
-            cursor.execute('INSERT INTO borrowed VALUES ("' + title + '", "' + author + '", "' + genre + '", "' + id + '", "' + username + '", "' + date + '", "' + str(borrowid) + '")')
+            cursor.execute('INSERT INTO borrowed VALUES ("' + title + '", "' + author + '", "' + genre + '", "' + id + '", "' + username + '", "' + str(today) + '","' + dateout2 + '", "' + str(borrowid) + '")')
             cursor.execute('UPDATE inventory SET copies ="' + str(int((info[0])[3]) - 1) + '" WHERE id = "' + id + '"')
             connection.commit()
             connection.close()

@@ -7,6 +7,8 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.screenmanager import ScreenManager, Screen
 import sqlite3
 import databasefunctions
+import datetime
+from datetime import date
 class application(App):
    def build(self):
       self.sm = ScreenManager()
@@ -109,7 +111,7 @@ class application(App):
 
       self.borrowconfirm = Label(text = '')
       self.BID = TextInput(multiline=False, hint_text = 'The ID of the book you would like to borrow')
-      self.Returndate = TextInput(multiline=False, hint_text = 'when would you like to return the book? (write as day,month,year)')
+      self.Returndate = TextInput(multiline=False, hint_text = 'when would you like to return the book?\n(write as year,month,day, for example, 2025,01,01)')
       self.borrowpage.add_widget(Label(text = 'please enter the ID of the book you would like to take out'))
       self.borrowpage.add_widget(self.borrowconfirm)
       self.borrowpage.add_widget(self.BID)
