@@ -57,7 +57,6 @@ def borrow(id, date):
     cursor = connection.cursor()
     idcursor = connection.cursor()
     usercursor = connection.cursor()
-    cursor.execute("DROP Table Borrowed")
     cursor.execute("CREATE TABLE IF NOT EXISTS Borrowed (title TEXT NOT NULL, author TEXT NOT NULL, genre TEXT NOT NULL, id TEXT NOT NULL, user TEXT NOT NULL, dateout DATE NOT NULL, due DATE NOT NULL, borrowid TEXT NOT NULL PRIMARY KEY)")
     try:
         cursor.execute('SELECT title, author, genre, copies FROM inventory\nWHERE id = "' + id + '"')
@@ -133,3 +132,13 @@ def changecopies(ID, Copies):
     except:
         return('Error, ID is not in inventory')
     return('inventory succesfully updated')
+def viewborrowed():
+    connection = sqlite3.connect("Testinventory.db")
+    cursor = connection.cursor()
+    try:
+        cursor.execute('SELECT title, id, user, dateout FROM borrowed')
+        info = cursor.fetchall()
+        return(info)
+    except:
+        connection.close()
+        return('there are no currently borrowed books')

@@ -29,6 +29,7 @@ class application(App):
       self.copypage = GridLayout(cols=2)
       self.borrowedview = GridLayout(cols=2)
       self.borrowedview.bind(minimum_height = self.borrowedview.setter('height'))
+      self.scrolling = ScrollView(size_hint=(1, None), size=(Window.width, Window.height), scroll_type = ['content'])
       self.screen1 = Screen(name = 'login_screen')
       self.screen2 = Screen(name = 'register_screen')
       self.screen3 = Screen(name = 'admin_screen')
@@ -38,7 +39,7 @@ class application(App):
       self.screenBR = Screen(name = 'borrow_screen')
       self.REscreen = Screen(name = 'return_screen')
       self.COscreen = Screen(name = 'copies_screen')
-      scrollscreenB = Screen(name = 'borrow_view_screen')
+      self.scrollscreenB = Screen(name = 'borrow_view_screen')
       self.layout1.add_widget(Label(text='Welcome to the OLA library system, please enter your username and password to log in\nIf you do not have an account please click register to make one', font_size='20sp'))
       self.tinput = TextInput(multiline=False, hint_text = 'Username')
       self.pinput = TextInput(multiline=False, hint_text = 'Password', password = True)
@@ -150,6 +151,11 @@ class application(App):
       self.COscreen.add_widget(self.copypage)
       self.sm.add_widget(self.COscreen)
 
+      self.borrowedview.add_widget(Label(text = 'these are the books which are currently borrowed'))
+      self.borrowedview.add_widget(Label(text = 'return to admin page', on_press = self.listswap))
+      scrolling.add_widget(self.borrowedview)
+      self.scrollscreenB.add_widget(self.scrolling)
+      self.sm.add_widget(self.scrollscreenB)
       return self.sm
    
    def registerswap(self, instance):
@@ -202,6 +208,11 @@ class application(App):
          self.sm.current = 'return_screen'
       elif self.sm.current == 'return_screen':
          self.sm.current = 'student_screen'
+   def listswap(self,instance):
+      if self.sm.current == 'borrow_view_screen':
+         self.sm.current = 'admin_screen'
+      elif self.sm.current == 'admin_screen':
+         self.sm.current = 'borrow_view_screen'
    def addbook(self, newtitle,newauthor,newgenre,newid,newcopies):
       self.returnlabel.text = databasefunctions.addbook(newtitle,newauthor,newgenre,newid,newcopies)
    def removebook(self, RID):

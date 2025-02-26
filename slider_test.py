@@ -6,8 +6,11 @@ from kivy.uix.button import Button
 from kivy.uix.slider import Slider
 from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
+from kivy.uix.screenmanager import ScreenManager, Screen
 class application(App):
     def build(self):
+        self.sm = ScreenManager()
+        self.screen1 = Screen(name = 'screen_screen')
         layout = GridLayout(cols=1, spacing=10, size_hint_y =None)
         #layout1 = GridLayout(rows=1, spacing=10, size_hint_x =None)
         layout2 = GridLayout(cols=2, spacing=10, size_hint_y =None)
@@ -23,7 +26,9 @@ class application(App):
         #layout.add_widget(layout1)
         layout.add_widget(layout2)
         root.add_widget(layout)
-        return root
+        self.screen1.add_widget(root)
+        self.sm.add_widget(self.screen1)
+        return self.sm
 if __name__ == '__main__':
    myApp = application()
    myApp.run()
