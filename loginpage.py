@@ -9,6 +9,8 @@ import sqlite3
 import databasefunctions
 import datetime
 from datetime import date
+from kivy.uix.scrollview import ScrollView
+from kivy.core.window import Window
 class application(App):
    def build(self):
       self.sm = ScreenManager()
@@ -24,7 +26,9 @@ class application(App):
       self.removepage = GridLayout(cols=2)
       self.borrowpage = GridLayout(cols=2)
       self.returnpage = GridLayout(cols=2)
-      self.copypage = GridLayout(cols = 2)
+      self.copypage = GridLayout(cols=2)
+      self.borrowedview = GridLayout(cols=2)
+      self.borrowedview.bind(minimum_height = self.borrowedview.setter('height'))
       self.screen1 = Screen(name = 'login_screen')
       self.screen2 = Screen(name = 'register_screen')
       self.screen3 = Screen(name = 'admin_screen')
@@ -34,6 +38,7 @@ class application(App):
       self.screenBR = Screen(name = 'borrow_screen')
       self.REscreen = Screen(name = 'return_screen')
       self.COscreen = Screen(name = 'copies_screen')
+      scrollscreenB = Screen(name = 'borrow_view_screen')
       self.layout1.add_widget(Label(text='Welcome to the OLA library system, please enter your username and password to log in\nIf you do not have an account please click register to make one', font_size='20sp'))
       self.tinput = TextInput(multiline=False, hint_text = 'Username')
       self.pinput = TextInput(multiline=False, hint_text = 'Password', password = True)
@@ -71,6 +76,7 @@ class application(App):
       self.mainpage.add_widget(Button(text = 'Remove a book', on_press = self.bookremoveswap))
       self.mainpage.add_widget(Button(text = 'Log out', on_press = self.logout))
       self.mainpage.add_widget(Button(text = 'Change the number of copies a book has', on_press = self.copyswap))
+      self.mainpage.add_widget(Button(text = 'See the status of borrowed books', on_press = self.listswap))
       self.screen3.add_widget(self.mainpage)
       self.sm.add_widget(self.screen3)
 
