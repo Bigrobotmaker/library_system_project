@@ -138,6 +138,7 @@ def viewborrowed():
     try:
         cursor.execute('SELECT title, id, user, dateout FROM borrowed')
         info = cursor.fetchall()
+        connection.close()
         return(info)
     except:
         connection.close()

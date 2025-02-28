@@ -150,12 +150,11 @@ class application(App):
       self.copypage.add_widget(Button(text = 'change number of copies', on_press = lambda x:self.changecopies(self.idinput.text, self.copyinput.text)))
       self.COscreen.add_widget(self.copypage)
       self.sm.add_widget(self.COscreen)
-
       self.borrowedview.add_widget(Label(text = 'these are the books which are currently borrowed'))
-      self.borrowedview.add_widget(Label(text = 'return to admin page', on_press = self.listswap))
-      scrolling.add_widget(self.borrowedview)
-      self.scrollscreenB.add_widget(self.scrolling)
-      self.sm.add_widget(self.scrollscreenB)
+      self.borrowedview.add_widget(Button(text = 'return to admin page', on_press = self.listswap))
+      #self.scrolling.add_widget(self.borrowedview)
+     # self.scrollscreenB.add_widget(self.scrolling)
+      #self.sm.add_widget(self.scrollscreenB)
       return self.sm
    
    def registerswap(self, instance):
@@ -212,6 +211,7 @@ class application(App):
       if self.sm.current == 'borrow_view_screen':
          self.sm.current = 'admin_screen'
       elif self.sm.current == 'admin_screen':
+         self.viewborrowed()
          self.sm.current = 'borrow_view_screen'
    def addbook(self, newtitle,newauthor,newgenre,newid,newcopies):
       self.returnlabel.text = databasefunctions.addbook(newtitle,newauthor,newgenre,newid,newcopies)
@@ -233,6 +233,18 @@ class application(App):
       self.returnconfirm.text = databasefunctions.returnbook(title)
    def changecopies(self, ID, Copies):
       self.copyconfirm.text = databasefunctions.changecopies(ID, Copies)
+   def viewborrowed(self):
+      info = databasefunctions.viewborrowed()
+      if info == 'there are no currently borrowed books':
+         self.borrowedview.add_widget(Label(text = info))
+      else:
+         for item in range(1,len(info)):
+            print(item)
+            item = int(item)
+            self.borrowedview.add_widget(Label(text = ((info[item-1])[0]) + '\n book ID: ' + ((info[item-1])[1]) + '\n borrowed by ' + ((info[item-1])[2]) + '\n on ' + ((info[item-1])[3])))
+      self.scrolling.add_widget(self.borrowedview)
+      self.scrollscreenB.add_widget(self.scrolling)
+      self.sm.add_widget(self.scrollscreenB)
 
 if __name__ == '__main__':
    myApp = application()
