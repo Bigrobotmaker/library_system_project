@@ -213,6 +213,7 @@ class application(App):
    def listswap(self,instance):
       if self.sm.current == 'borrow_view_screen':
          self.sm.current = 'admin_screen'
+         self.sm.remove_widget(self.scrollscreenB)
       elif self.sm.current == 'admin_screen':
          self.borrowedview = GridLayout(cols=2)
          self.viewborrowed()
@@ -249,7 +250,6 @@ class application(App):
          self.borrowedview.add_widget(Label(text = info, height = 100))
       else:
          for item in range(0,len(info)):
-            print(item)
             item = int(item)
             self.borrowedview.add_widget(Label(text = ((info[item-1])[0]) + '\n book ID: ' + ((info[item-1])[1]) + '\n borrowed by ' + ((info[item-1])[2]) + '\n on ' + ((info[item-1])[3]), size_hint_y=None, height = 100))
       self.scrolling.add_widget(self.borrowedview)
