@@ -27,9 +27,9 @@ class application(App):
       self.borrowpage = GridLayout(cols=2)
       self.returnpage = GridLayout(cols=2)
       self.copypage = GridLayout(cols=2)
-      self.borrowedview = GridLayout(cols=2)
-      self.borrowedview.bind(minimum_height = self.borrowedview.setter('height'))
-      self.scrolling = ScrollView(size_hint=(1, None), size=(Window.width, Window.height), scroll_type = ['content'])
+      # self.borrowedview = GridLayout(cols=2,size_hint_y =None)
+      # self.borrowedview.bind(minimum_height = self.borrowedview.setter('height'))
+      # self.scrolling = ScrollView(size_hint=(1, None), size=(Window.width, Window.height), scroll_type = ['content'])
       self.screen1 = Screen(name = 'login_screen')
       self.screen2 = Screen(name = 'register_screen')
       self.screen3 = Screen(name = 'admin_screen')
@@ -39,7 +39,8 @@ class application(App):
       self.screenBR = Screen(name = 'borrow_screen')
       self.REscreen = Screen(name = 'return_screen')
       self.COscreen = Screen(name = 'copies_screen')
-      self.scrollscreenB = Screen(name = 'borrow_view_screen')
+      #self.scrollscreenB = Screen(name = 'borrow_view_screen')
+
       self.layout1.add_widget(Label(text='Welcome to the OLA library system, please enter your username and password to log in\nIf you do not have an account please click register to make one', font_size='20sp'))
       self.tinput = TextInput(multiline=False, hint_text = 'Username')
       self.pinput = TextInput(multiline=False, hint_text = 'Password', password = True)
@@ -150,11 +151,13 @@ class application(App):
       self.copypage.add_widget(Button(text = 'change number of copies', on_press = lambda x:self.changecopies(self.idinput.text, self.copyinput.text)))
       self.COscreen.add_widget(self.copypage)
       self.sm.add_widget(self.COscreen)
-      self.borrowedview.add_widget(Label(text = 'these are the books which are currently borrowed'))
-      self.borrowedview.add_widget(Button(text = 'return to admin page', on_press = self.listswap))
-      #self.scrolling.add_widget(self.borrowedview)
-     # self.scrollscreenB.add_widget(self.scrolling)
-      #self.sm.add_widget(self.scrollscreenB)
+
+      
+      # self.borrowedview.add_widget(Label(text = 'these are the books which are currently borrowed'))
+      # self.borrowedview.add_widget(Button(text = 'return to admin page', on_press = self.listswap))
+      # self.scrolling.add_widget(self.borrowedview)
+      # self.scrollscreenB.add_widget(self.scrolling)
+      # self.sm.add_widget(self.scrollscreenB)
       return self.sm
    
    def registerswap(self, instance):
@@ -211,6 +214,7 @@ class application(App):
       if self.sm.current == 'borrow_view_screen':
          self.sm.current = 'admin_screen'
       elif self.sm.current == 'admin_screen':
+         self.borrowedview = GridLayout(cols=2)
          self.viewborrowed()
          self.sm.current = 'borrow_view_screen'
    def addbook(self, newtitle,newauthor,newgenre,newid,newcopies):
@@ -235,17 +239,22 @@ class application(App):
       self.copyconfirm.text = databasefunctions.changecopies(ID, Copies)
    def viewborrowed(self):
       info = databasefunctions.viewborrowed()
+      self.scrollscreenB = Screen(name = 'borrow_view_screen')
+      self.borrowedview = GridLayout(cols=2,size_hint_y =None, spacing = 10)
+      self.borrowedview.bind(minimum_height = self.borrowedview.setter('height'))
+      self.scrolling = ScrollView(size_hint=(1, None), size=(Window.width, Window.height), scroll_type = ['content'])
+      self.borrowedview.add_widget(Label(text = 'these are the books which are currently borrowed', size_hint_y =None , height = 300))
+      self.borrowedview.add_widget(Button(text = 'return to admin page', on_press = self.listswap, size_hint_y =None , height = 300)) 
       if info == 'there are no currently borrowed books':
-         self.borrowedview.add_widget(Label(text = info))
+         self.borrowedview.add_widget(Label(text = info, height = 100))
       else:
-         for item in range(1,len(info)):
+         for item in range(0,len(info)):
             print(item)
             item = int(item)
-            self.borrowedview.add_widget(Label(text = ((info[item-1])[0]) + '\n book ID: ' + ((info[item-1])[1]) + '\n borrowed by ' + ((info[item-1])[2]) + '\n on ' + ((info[item-1])[3])))
+            self.borrowedview.add_widget(Label(text = ((info[item-1])[0]) + '\n book ID: ' + ((info[item-1])[1]) + '\n borrowed by ' + ((info[item-1])[2]) + '\n on ' + ((info[item-1])[3]), size_hint_y=None, height = 100))
       self.scrolling.add_widget(self.borrowedview)
       self.scrollscreenB.add_widget(self.scrolling)
       self.sm.add_widget(self.scrollscreenB)
-
 if __name__ == '__main__':
    myApp = application()
    myApp.run()
