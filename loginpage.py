@@ -27,9 +27,7 @@ class application(App):
       self.borrowpage = GridLayout(cols=2)
       self.returnpage = GridLayout(cols=2)
       self.copypage = GridLayout(cols=2)
-      # self.borrowedview = GridLayout(cols=2,size_hint_y =None)
-      # self.borrowedview.bind(minimum_height = self.borrowedview.setter('height'))
-      # self.scrolling = ScrollView(size_hint=(1, None), size=(Window.width, Window.height), scroll_type = ['content'])
+      self.parameters = GridLayout(cols=3)
       self.screen1 = Screen(name = 'login_screen')
       self.screen2 = Screen(name = 'register_screen')
       self.screen3 = Screen(name = 'admin_screen')
@@ -39,7 +37,7 @@ class application(App):
       self.screenBR = Screen(name = 'borrow_screen')
       self.REscreen = Screen(name = 'return_screen')
       self.COscreen = Screen(name = 'copies_screen')
-      #self.scrollscreenB = Screen(name = 'borrow_view_screen')
+      self.searchscreen = Screen(name = 'parameters_screen')
 
       self.layout1.add_widget(Label(text='Welcome to the OLA library system, please enter your username and password to log in\nIf you do not have an account please click register to make one', font_size='20sp'))
       self.tinput = TextInput(multiline=False, hint_text = 'Username')
@@ -101,7 +99,7 @@ class application(App):
 
       self.mainpageS.add_widget(Label(text = ''))
       self.mainpageS.add_widget(Label(text = 'Welcome'))
-      self.mainpageS.add_widget(Label(text = ''))
+      self.mainpageS.add_widget(Button(text = 'View a list of books', on_press = self.searchbook))
       self.mainpageS.add_widget(Button(text = 'Log out', on_press = self.logout))
       self.mainpageS.add_widget(Button(text = 'Return a book', on_press = self.returnswap))
       self.mainpageS.add_widget(Button(text = 'Borrow a book', on_press = self.borrowswap))
@@ -152,12 +150,18 @@ class application(App):
       self.COscreen.add_widget(self.copypage)
       self.sm.add_widget(self.COscreen)
 
-      
-      # self.borrowedview.add_widget(Label(text = 'these are the books which are currently borrowed'))
-      # self.borrowedview.add_widget(Button(text = 'return to admin page', on_press = self.listswap))
-      # self.scrolling.add_widget(self.borrowedview)
-      # self.scrollscreenB.add_widget(self.scrolling)
-      # self.sm.add_widget(self.scrollscreenB)
+      searchtitle = TextInput(multiline = False, hint_text = "the title you would like to search for (leave blank for no specific title)")
+      searchgenre = TextInput(multiline = False, hint_text = "the genre you would like to search for (leave blank for no specific genre)")
+      searchauthor = TextInput(multiline = False, hint_text = "the author you would like to search for (leave blank for no specific author)")
+      self.parameters.add_widget(Label(text = 'please enter the search parameters'))
+      self.parameters.add_widget(Label(text = ''))
+      self.parameters.add_widget(Label(text = ''))
+      self.parameters.add_widget(searchtitle)
+      self.parameters.add_widget(searchgenre)
+      self.parameters.add_widget(searchauthor)
+      self.parameters.add_widget(Button(text = 'return to main page', on_press = self.searchbook))
+      self.parameters.add_widget(Label(text = ''))
+      self.parameters.add_widget(Button(text = 'search', on_press = self.viewresults))
       return self.sm
    
    def registerswap(self, instance):
@@ -194,6 +198,13 @@ class application(App):
       elif self.sm.current == 'bookadd_screen':
          self.returnlabel.text = 'please add a new book here'
          self.sm.current = 'admin_screen'
+   def searchbook(self, instance):
+      if self.sm.current == 'student_screen':
+         self.sm.current = 'parameters_screen'
+      if self.sm.current == 'parameters_screen':
+         self.sm.current = 'student_screen'
+   def viewresults(self, instance):
+      results = databasefunctions.getresults()
    def bookremoveswap(self,instance):
       if self.sm.current == 'admin_screen':
          self.sm.current = 'bookremove_screen'
