@@ -144,3 +144,18 @@ def viewborrowed():
     except:
         connection.close()
         return('there are no currently borrowed books')
+def getresults(title, genre, author):
+    connection = sqlite3.connect("Testinventory.db")
+    cursor = connection.cursor()
+    if title == '':
+        title = '%'
+    if genre == '':
+        genre = '%'
+    if author == '':
+        author = '%'
+    cursor.execute('SELECT title, author, genre, id, copies FROM inventory WHERE title LIKE "' + title + '" AND author LIKE "' + author + '" AND genre LIKE "' + author + '"')
+    results = cursor.fetchall()
+    if len((results[0])[0]) == 0:
+        return('no books match the criteria')
+    else:
+        return(results)

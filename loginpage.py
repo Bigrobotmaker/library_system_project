@@ -123,7 +123,7 @@ class application(App):
       self.borrowpage.add_widget(self.BID)
       self.borrowpage.add_widget(self.Returndate)
       self.borrowpage.add_widget(Button(text = 'back to main page', on_press = self.borrowswap))
-      self.borrowpage.add_widget(Button(text = 'request to borrow the book', on_press = lambda x:self.borrow(self.BID.text, self.Returndate.text)))
+      self.borrowpage.add_widget(Button(text = 'request to borrow the book', on_press = lambda x:self.borrow))
       self.screenBR.add_widget(self.borrowpage)
       self.sm.add_widget(self.screenBR)
 
@@ -150,18 +150,18 @@ class application(App):
       self.COscreen.add_widget(self.copypage)
       self.sm.add_widget(self.COscreen)
 
-      searchtitle = TextInput(multiline = False, hint_text = "the title you would like to search for (leave blank for no specific title)")
-      searchgenre = TextInput(multiline = False, hint_text = "the genre you would like to search for (leave blank for no specific genre)")
-      searchauthor = TextInput(multiline = False, hint_text = "the author you would like to search for (leave blank for no specific author)")
+      self.searchtitle = TextInput(multiline = False, hint_text = "the title you would like to search for (leave blank for no specific title)")
+      self.searchgenre = TextInput(multiline = False, hint_text = "the genre you would like to search for (leave blank for no specific genre)")
+      self.searchauthor = TextInput(multiline = False, hint_text = "the author you would like to search for (leave blank for no specific author)")
       self.parameters.add_widget(Label(text = 'please enter the search parameters'))
       self.parameters.add_widget(Label(text = ''))
       self.parameters.add_widget(Label(text = ''))
-      self.parameters.add_widget(searchtitle)
-      self.parameters.add_widget(searchgenre)
-      self.parameters.add_widget(searchauthor)
+      self.parameters.add_widget(self.searchtitle)
+      self.parameters.add_widget(self.searchgenre)
+      self.parameters.add_widget(self.searchauthor)
       self.parameters.add_widget(Button(text = 'return to main page', on_press = self.searchbook))
       self.parameters.add_widget(Label(text = ''))
-      self.parameters.add_widget(Button(text = 'search', on_press = self.viewresults))
+      self.parameters.add_widget(Button(text = 'search', on_press = lambda x:self.viewresults(self.searchtitle.text, self.searchgenre.text, self.searchauthor.text)))
       return self.sm
    
    def registerswap(self, instance):
@@ -204,7 +204,8 @@ class application(App):
       if self.sm.current == 'parameters_screen':
          self.sm.current = 'student_screen'
    def viewresults(self, instance):
-      results = databasefunctions.getresults()
+      results = databasefunctions.getresults(self.searchtitle.text, self.searchgenre.text, self.searchauthor.text)
+      
    def bookremoveswap(self,instance):
       if self.sm.current == 'admin_screen':
          self.sm.current = 'bookremove_screen'
@@ -266,6 +267,7 @@ class application(App):
       self.scrolling.add_widget(self.borrowedview)
       self.scrollscreenB.add_widget(self.scrolling)
       self.sm.add_widget(self.scrollscreenB)
+   
 if __name__ == '__main__':
    myApp = application()
    myApp.run()
