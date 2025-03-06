@@ -214,15 +214,19 @@ class application(App):
       self.resultview.add_widget(Label(text = 'results:', size_hint_y =None , height = 300))
       self.resultview.add_widget(Button(text = 'return to search page', on_press = self.viewresults, size_hint_y =None , height = 300)) 
       if results == 'no books match the criteria':
-         self.resultview.add_widget(Label(text = results, height = 100))
+         print('test')
+         self.resultview.add_widget(Label(text = 'no books match the criteria', height = 100))
       else:
          for item in range(0,len(results)):
             item = int(item)
-            self.resultview.add_widget(Label(text = ((results[item-1])[0]) + '\n By ' + ((results[item-1])[1]) + '\n genre: ' + ((results[item-1])[2]) + '\n Book ID: ' + ((results[item-1])[3]) + '\n this book has' + ((results[item-1])[4]) + 'copies left', size_hint_y=None, height = 100))
+            if ((results[item-1])[4]) != '1':
+               self.resultview.add_widget(Label(text = ((results[item-1])[0]) + '\n By ' + ((results[item-1])[1]) + ' genre: ' + ((results[item-1])[2]) + '\n Book ID: ' + ((results[item-1])[3]) + '\n this book has' + ((results[item-1])[4]) + ' copies left ', size_hint_y=None, height = 100))
+            else:
+               self.resultview.add_widget(Label(text = ((results[item-1])[0]) + '\n By ' + ((results[item-1])[1]) + ' genre: ' + ((results[item-1])[2]) + '\n Book ID: ' + ((results[item-1])[3]) + '\n this book has ' + ((results[item-1])[4]) + ' copy left', size_hint_y=None, height = 100))
       self.searchscroll.add_widget(self.resultview)
       self.resultscreen.add_widget(self.searchscroll)
       self.sm.add_widget(self.resultscreen)
-      self.viewresults()
+      self.viewresults(instance)
 
    def viewresults(self, instance):
          if self.sm.current == 'parameters_screen':
