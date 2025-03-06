@@ -161,7 +161,9 @@ class application(App):
       self.parameters.add_widget(self.searchauthor)
       self.parameters.add_widget(Button(text = 'return to main page', on_press = self.searchbook))
       self.parameters.add_widget(Label(text = ''))
-      self.parameters.add_widget(Button(text = 'search', on_press = lambda x:self.viewresults(self.searchtitle.text, self.searchgenre.text, self.searchauthor.text)))
+      self.parameters.add_widget(Button(text = 'search', on_press = self.getresults))
+      self.searchscreen.add_widget(self.parameters)
+      self.sm.add_widget(self.searchscreen)
       return self.sm
    
    def registerswap(self, instance):
@@ -201,11 +203,34 @@ class application(App):
    def searchbook(self, instance):
       if self.sm.current == 'student_screen':
          self.sm.current = 'parameters_screen'
-      if self.sm.current == 'parameters_screen':
+      elif self.sm.current == 'parameters_screen':
          self.sm.current = 'student_screen'
-   def viewresults(self, instance):
+   def getresults(self, instance):
       results = databasefunctions.getresults(self.searchtitle.text, self.searchgenre.text, self.searchauthor.text)
-      
+      self.resultscreen = Screen(name = 'search_results_screen')
+      self.resultview = GridLayout(cols=2,size_hint_y =None, spacing = 10)
+      self.resultview.bind(minimum_height = self.resultview.setter('height'))
+      self.searchscroll = ScrollView(size_hint=(1, None), size=(Window.width, Window.height), scroll_type = ['content'])
+      self.resultview.add_widget(Label(text = 'results:', size_hint_y =None , height = 300))
+      self.resultview.add_widget(Button(text = 'return to search page', on_press = self.viewresults, size_hint_y =None , height = 300)) 
+      if results == 'no books match the criteria':
+         self.resultview.add_widget(Label(text = results, height = 100))
+      else:
+         for item in range(0,len(results)):
+            item = int(item)
+            self.resultview.add_widget(Label(text = ((results[item-1])[0]) + '\n By ' + ((results[item-1])[1]) + '\n genre: ' + ((results[item-1])[2]) + '\n Book ID: ' + ((results[item-1])[3]) + '\n this book has' + ((results[item-1])[4]) + 'copies left', size_hint_y=None, height = 100))
+      self.searchscroll.add_widget(self.resultview)
+      self.resultscreen.add_widget(self.searchscroll)
+      self.sm.add_widget(self.resultscreen)
+      self.viewresults()
+
+   def viewresults(self, instance):
+         if self.sm.current == 'parameters_screen':
+            self.sm.current = 'search_results_screen'
+         elif self.sm.current == 'search_results_screen':
+            self.sm.current = 'parameters_screen'
+            self.sm.remove_widget(self.resultscreen)
+
    def bookremoveswap(self,instance):
       if self.sm.current == 'admin_screen':
          self.sm.current = 'bookremove_screen'
