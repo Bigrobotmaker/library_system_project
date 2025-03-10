@@ -33,6 +33,7 @@ def removebook(id):
     cursor = connection.cursor()
     try:
         cursor.execute('DELETE FROM inventory WHERE id = "' + id + '"')
+        cursor.execute('DELETE FROM Borrowed WHERE id = "' + id + '"')
         connection.commit()
         connection.close()
     except:
