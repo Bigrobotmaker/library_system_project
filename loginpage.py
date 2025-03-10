@@ -150,9 +150,9 @@ class application(App):
       self.COscreen.add_widget(self.copypage)
       self.sm.add_widget(self.COscreen)
 
-      self.searchtitle = TextInput(multiline = False, hint_text = "the title you would like to search for (leave blank for no specific title)")
-      self.searchgenre = TextInput(multiline = False, hint_text = "the genre you would like to search for (leave blank for no specific genre)")
-      self.searchauthor = TextInput(multiline = False, hint_text = "the author you would like to search for (leave blank for no specific author)")
+      self.searchtitle = TextInput(multiline = False, hint_text = "the title you would like to search for\n(leave blank for no specific title)")
+      self.searchgenre = TextInput(multiline = False, hint_text = "the genre you would like to search for\n(leave blank for no specific genre)")
+      self.searchauthor = TextInput(multiline = False, hint_text = "the author you would like to search for\n(leave blank for no specific author)")
       self.parameters.add_widget(Label(text = 'please enter the search parameters'))
       self.parameters.add_widget(Label(text = ''))
       self.parameters.add_widget(Label(text = ''))
@@ -220,7 +220,7 @@ class application(App):
          for item in range(0,len(results)):
             item = int(item)
             if ((results[item-1])[4]) != '1':
-               self.resultview.add_widget(Label(text = ((results[item-1])[0]) + '\n By ' + ((results[item-1])[1]) + ' genre: ' + ((results[item-1])[2]) + '\n Book ID: ' + ((results[item-1])[3]) + '\n this book has' + ((results[item-1])[4]) + ' copies left ', size_hint_y=None, height = 100))
+               self.resultview.add_widget(Label(text = ((results[item-1])[0]) + '\n By ' + ((results[item-1])[1]) + ' genre: ' + ((results[item-1])[2]) + '\n Book ID: ' + ((results[item-1])[3]) + '\n this book has ' + ((results[item-1])[4]) + ' copies left ', size_hint_y=None, height = 100))
             else:
                self.resultview.add_widget(Label(text = ((results[item-1])[0]) + '\n By ' + ((results[item-1])[1]) + ' genre: ' + ((results[item-1])[2]) + '\n Book ID: ' + ((results[item-1])[3]) + '\n this book has ' + ((results[item-1])[4]) + ' copy left', size_hint_y=None, height = 100))
       self.searchscroll.add_widget(self.resultview)

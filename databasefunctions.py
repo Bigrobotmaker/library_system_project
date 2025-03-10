@@ -6,38 +6,35 @@ def addbook(title, author, genre, id, copies):
     cursor = connection.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS inventory (title TEXT NOT NULL, author TEXT NOT NULL, genre TEXT NOT NULL, id TEXT NOT NULL PRIMARY KEY, copies TEXT NOT NULL)")
     try:
-        cursor.execute('INSERT INTO inventory VALUES ("' + title + '", "' + author + '", "' + genre + '", "' + id + '", "' + copies + '")')
+        data = (title,author,genre,id,copies)
+        cursor.execute('INSERT INTO inventory VALUES (?, ?, ?, ?, ?)', data)
         connection.commit()
-        connection.close()
     except:
-        connection.close()
         return('ID in use')
     return('book successfully added')
 def passcheck(username):
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
+    uname = (username,)
     try:
-        cursor.execute('SELECT password FROM users\nWHERE username = "' + username + '"')
+        cursor.execute('SELECT password FROM users\nWHERE username = ?', uname)
         password = cursor.fetchall()
         password = ','.join(password[0])
-        cursor.execute('UPDATE users SET loggedin = "True" WHERE username = "' + username + '"')
+        cursor.execute('UPDATE users SET loggedin = "True" WHERE username = ?', uname)
         connection.commit()
-        connection.close()
         return password
     except:
         connection.commit()
-        connection.close()
         return("password not recognised")
 def removebook(id):
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
     try:
-        cursor.execute('DELETE FROM inventory WHERE id = "' + id + '"')
-        cursor.execute('DELETE FROM Borrowed WHERE id = "' + id + '"')
+        di = (id,)
+        cursor.execute('DELETE FROM inventory WHERE id = ?',di)
+        cursor.execute('DELETE FROM Borrowed WHERE id = ?',di)
         connection.commit()
-        connection.close()
     except:
-        connection.close()
         return('ID is not in use')
     return('book successfully deleted')
 def register(u,p,c):
@@ -45,8 +42,9 @@ def register(u,p,c):
     cursor = connection.cursor()
     if p == c:
         try:
+            userdata = (u,p)
             cursor.execute("CREATE TABLE IF NOT EXISTS users (username TEXT NOT NULL PRIMARY KEY, password TEXT NOT NULL, loggedin TEXT NOT NULL)")
-            cursor.execute('INSERT INTO users VALUES ("' + u + '", "' + p + '", "' + "False" + '")')
+            cursor.execute('INSERT INTO users VALUES (?, ?, "' + "False" + '")',userdata)
             connection.commit()
         except:
             return('username in use')
@@ -60,7 +58,8 @@ def borrow(id, date):
     usercursor = connection.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS Borrowed (title TEXT NOT NULL, author TEXT NOT NULL, genre TEXT NOT NULL, id TEXT NOT NULL, user TEXT NOT NULL, dateout DATE NOT NULL, due DATE NOT NULL, borrowid TEXT NOT NULL PRIMARY KEY)")
     try:
-        cursor.execute('SELECT title, author, genre, copies FROM inventory\nWHERE id = "' + id + '"')
+        di = (id,)
+        cursor.execute('SELECT title, author, genre, copies FROM inventory\nWHERE id = ?',di)
         usercursor.execute('SELECT username FROM users WHERE loggedin = "' + "True" + '"')
         username = usercursor.fetchall()
         username = (username[0])[0]
@@ -89,7 +88,6 @@ def borrow(id, date):
         else:
             return("no copies available, try again later")
     except:
-        connection.close()
         return('ID not recognised')
 def logoutset():
     connection = sqlite3.connect("Testinventory.db")
@@ -101,6 +99,7 @@ def logoutset():
     cursorupdate.execute('UPDATE users SET loggedin = "False" WHERE username = "' + username + '"')
 def returnbook(title):
     try:
+        data = (title,)
         connection = sqlite3.connect("Testinventory.db")
         cursor = connection.cursor()
         usercursor = connection.cursor()
@@ -108,28 +107,27 @@ def returnbook(title):
         usercursor.execute('SELECT username FROM users WHERE loggedin = "' + "True" + '"')
         name = usercursor.fetchall()
         uname = (name[0])[0]
-        cursor.execute('SELECT borrowid FROM borrowed WHERE title = "' + title + '" AND user = "' + uname + '"')
+        cursor.execute('SELECT borrowid FROM borrowed WHERE title = ? AND user = "' + uname + '"', data)
         id = cursor.fetchall()
         num = len(id)
         if num == 1:
-            cursor.execute('DELETE FROM borrowed WHERE title = "' + title + '" AND user = "' + uname + '"')
+            cursor.execute('DELETE FROM borrowed WHERE title = ? AND user = "' + uname + '"', data)
         else:
-            cursor.execute('DELETE FROM borrowed WHERE title = "' + title + '" AND user = "' + uname + '" AND borrowid = "' + (id[0])[0] + '"')
+            cursor.execute('DELETE FROM borrowed WHERE title = ? AND user = "' + uname + '" AND borrowid = "' + (id[0])[0] + '"', data)
         copycursor.execute('SELECT id, copies FROM inventory\nWHERE title = "' + title + '"')
         ids = copycursor.fetchall()
         bookid = (ids[0])[0]
         cursor.execute('UPDATE inventory SET copies ="' + str(int((ids[0])[1]) - 1) + '" WHERE id = "' + bookid + '"')
         connection.commit()
-        connection.close()
         return('Return successful')
     except:
-        connection.close()
         return('You have not borrowed a book with that title')
 def changecopies(ID, Copies):
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
     try:
-        cursor.execute('UPDATE inventory SET copies = ' + Copies + ' WHERE id = "' + ID + '"')
+        data = (ID,Copies)
+        cursor.execute('UPDATE inventory SET copies = ? WHERE id = ?', data)
     except:
         return('Error, ID is not in inventory')
     return('inventory succesfully updated')
@@ -140,13 +138,13 @@ def viewborrowed():
         cursor.execute('SELECT title, id, user, dateout FROM borrowed')
         info = cursor.fetchall()
         print(info)
-        connection.close()
         return(info)
     except:
         connection.close()
         return('there are no currently borrowed books')
 def getresults(title, genre, author):
     try:
+        data = (title, author, genre)
         connection = sqlite3.connect("Testinventory.db")
         cursor = connection.cursor()
         if title == '':
@@ -155,7 +153,7 @@ def getresults(title, genre, author):
             genre = '%'
         if author == '':
             author = '%'
-        cursor.execute('SELECT title, author, genre, id, copies FROM inventory\nWHERE title LIKE "' + title + '" AND author LIKE "' + author + '" AND genre LIKE "' + genre + '"')
+        cursor.execute('SELECT title, author, genre, id, copies FROM inventory\nWHERE title LIKE ? AND author LIKE ? AND genre LIKE ?', data)
         results = cursor.fetchall()
         if results == []:
             return('no books match the criteria')
