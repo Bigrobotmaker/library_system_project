@@ -31,8 +31,8 @@ def removebook(id):
     cursor = connection.cursor()
     try:
         di = (id,)
-        cursor.execute('DELETE FROM inventory WHERE id = ?',di)
         cursor.execute('DELETE FROM Borrowed WHERE id = ?',di)
+        cursor.execute('DELETE FROM inventory WHERE id = ?',di)
         connection.commit()
     except:
         return('ID is not in use')
@@ -56,7 +56,7 @@ def borrow(id, date):
     cursor = connection.cursor()
     idcursor = connection.cursor()
     usercursor = connection.cursor()
-    cursor.execute("CREATE TABLE IF NOT EXISTS Borrowed (title TEXT NOT NULL, author TEXT NOT NULL, genre TEXT NOT NULL, id TEXT NOT NULL, user TEXT NOT NULL, dateout DATE NOT NULL, due DATE NOT NULL, borrowid TEXT NOT NULL PRIMARY KEY)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS Borrowed (title TEXT NOT NULL,\n author TEXT NOT NULL,\n genre TEXT NOT NULL,\n id TEXT NOT NULL REFERENCES inventory(id) ON DELETE CASCADE,\n user TEXT NOT NULL,\n dateout DATE NOT NULL,\n due DATE NOT NULL,\n borrowid TEXT NOT NULL PRIMARY KEY)")
     try:
         di = (id,)
         cursor.execute('SELECT title, author, genre, copies FROM inventory\nWHERE id = ?',di)
@@ -67,7 +67,7 @@ def borrow(id, date):
         title = (info[0])[0]
         author = (info[0])[1]
         genre = (info[0])[2]
-        idcursor.execute('SELECT id FROM Borrowed')
+        idcursor.execute('SELECT borrowid FROM Borrowed')
         borrowed = idcursor.fetchall()
         borrowid = 0
         for i in borrowed:
@@ -117,7 +117,7 @@ def returnbook(title):
         copycursor.execute('SELECT id, copies FROM inventory\nWHERE title = "' + title + '"')
         ids = copycursor.fetchall()
         bookid = (ids[0])[0]
-        cursor.execute('UPDATE inventory SET copies ="' + str(int((ids[0])[1]) - 1) + '" WHERE id = "' + bookid + '"')
+        cursor.execute('UPDATE inventory SET copies ="' + str(int((ids[0])[1]) + 1) + '" WHERE id = "' + bookid + '"')
         connection.commit()
         return('Return successful')
     except:
