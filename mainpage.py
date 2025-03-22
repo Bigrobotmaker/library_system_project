@@ -38,7 +38,7 @@ class application(App):
       self.REscreen = Screen(name = 'return_screen')
       self.COscreen = Screen(name = 'copies_screen')
       self.searchscreen = Screen(name = 'parameters_screen')
-
+#the above code initialises all the screens that the code needs
       self.layout1.add_widget(Label(text='Welcome to the OLA library system, please enter your username and password to log in\nIf you do not have an account please click register to make one', font_size='20sp'))
       self.tinput = TextInput(multiline=False, hint_text = 'Username')
       self.pinput = TextInput(multiline=False, hint_text = 'Password', password = True)
@@ -52,7 +52,7 @@ class application(App):
       self.layout.add_widget(self.layout2)
       self.screen1.add_widget(self.layout)
       self.sm.add_widget(self.screen1)
-
+#code for the login screen, creates all the labels and buttons, adds them and adds the overall screen to the screen manager
       self.registerlayout1.add_widget(Label(text='Please enter the username and password you would like to set'))
       self.tinput2 = TextInput(multiline=False, hint_text = 'Username')
       self.pinput2 = TextInput(multiline=False, hint_text = 'Password', password = True)
@@ -68,7 +68,7 @@ class application(App):
       self.registerlayout.add_widget(self.registerlayout2)
       self.screen2.add_widget(self.registerlayout)
       self.sm.add_widget(self.screen2)
-
+#creates and constructs the registration screen 
       self.mainpage.add_widget(Label(text = ''))
       self.mainpage.add_widget(Label(text = 'Welcome', font_size='40sp'))
       self.mainpage.add_widget(Label(text = ''))
@@ -79,7 +79,7 @@ class application(App):
       self.mainpage.add_widget(Button(text = 'See the status of borrowed books', on_press = self.listswap))
       self.screen3.add_widget(self.mainpage)
       self.sm.add_widget(self.screen3)
-
+      #above code creates and constructs the admin's main screen
       self.titleinput = TextInput(multiline=False, hint_text = 'Title')
       self.author = TextInput(multiline=False, hint_text = 'Author')
       self.genre = TextInput(multiline=False, hint_text = 'Genre')
