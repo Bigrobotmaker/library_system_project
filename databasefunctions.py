@@ -12,6 +12,7 @@ def addbook(title, author, genre, id, copies):
     except:
         return('ID in use')
     return('book successfully added')
+#places the entered data into a list and executes an sql function to add them to the database, the data is entered via a list because it protects agains sql injections, if an error occurs the handlign will return that the username was taken, which is the most common cause of an error in this function
 def passcheck(username):
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
@@ -26,6 +27,7 @@ def passcheck(username):
     except:
         connection.commit()
         return("password not recognised")
+#selects the passwords in the database for the given username then, if the password matches the other entered one, it is returned so that the function in the other program can swap to the home screen
 def removebook(id):
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
@@ -37,6 +39,7 @@ def removebook(id):
     except:
         return('ID is not in use')
     return('book successfully deleted')
+#deletes any items from the inventory and borrowed with the entered ID
 def register(u,p,c):
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
@@ -51,6 +54,7 @@ def register(u,p,c):
         return('registration successful')
     else:
         return('passwords do not match')
+#first checks if the password matches the confirm password, if not, returns that it doesnt, if it does it then adds the information to the users table
 def borrow(id, date):
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
@@ -89,6 +93,7 @@ def borrow(id, date):
             return("no copies available, try again later")
     except:
         return('ID not recognised')
+#obtains the username of the person who is borrowing and the book they are trying to borrow, then calculates the borrowid by simply adding 1 to the highest borrowid currently in use, if there is no id in use, it just uses 1, then it turns the entered date into the datetime format, then the program checks the number of copies listed in inventory and returns that there are none if no copies are available and ends the function, otherwise it reduces the number copies in the redgular inventory and adds all the information to borrowed, if an error occurred it returns that the id was not recognised
 def logoutset():
     connection = sqlite3.connect("Testinventory.db")
     cursorget = connection.cursor()
@@ -97,6 +102,7 @@ def logoutset():
     username = cursorget.fetchall()
     username = (username[0])[0]
     cursorupdate.execute('UPDATE users SET loggedin = "False" WHERE username = "' + username + '"')
+#changes the status of the user from logged in to logged out in the users table when they log out
 def returnbook(title):
     try:
         data = (title,)
@@ -122,6 +128,7 @@ def returnbook(title):
         return('Return successful')
     except:
         return('You have not borrowed a book with that title')
+#checks if there is a book with the given title taken out under the user's name, then if there is, that instance is removed from borrowed items then the number of copies in inventory is increased by one
 def changecopies(ID, Copies):
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
@@ -131,6 +138,7 @@ def changecopies(ID, Copies):
     except:
         return('Error, ID is not in inventory')
     return('inventory succesfully updated')
+#updates the inventory table so the number of copies is the entered number, if it fails it says that the id is not in inventory which is the msot likely cause of error
 def viewborrowed():
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
@@ -142,6 +150,7 @@ def viewborrowed():
     except:
         connection.close()
         return('there are no currently borrowed books')
+#selects the required info from borrowed books
 def getresults(title, genre, author):
     try:
         data = (title, author, genre)
@@ -162,3 +171,4 @@ def getresults(title, genre, author):
     except:
         connection.close()
         return('no books match the criteria')
+#searches for specific results based on the input, if the field is left blank it is a '%' which is a wildcard character so it substitutes for other characters, if there are no matching results it returns a label that says that there were no matching results, like is used rather than = to make the wildcard characters work
