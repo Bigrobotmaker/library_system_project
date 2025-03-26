@@ -153,15 +153,18 @@ def viewborrowed():
 #selects the required info from borrowed books
 def getresults(title, genre, author):
     try:
-        data = (title, author, genre)
         connection = sqlite3.connect("Testinventory.db")
         cursor = connection.cursor()
+        print(title)
+        print(genre)
+        print(author)
         if title == '':
             title = '%'
         if genre == '':
             genre = '%'
         if author == '':
             author = '%'
+        data = (title, author, genre)
         cursor.execute('SELECT title, author, genre, id, copies FROM inventory\nWHERE title LIKE ? AND author LIKE ? AND genre LIKE ?', data)
         results = cursor.fetchall()
         if results == []:
