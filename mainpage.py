@@ -11,6 +11,7 @@ import datetime
 from datetime import date
 from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
+import hashlib
 class application(App):
    def build(self):
       self.sm = ScreenManager()
@@ -273,7 +274,7 @@ class application(App):
       self.removelabel.text = databasefunctions.removebook(RID)
 #calls function to remove a book
    def passcheck(self, username):
-      if databasefunctions.passcheck(username) == self.pinput.text:
+      if databasefunctions.passcheck(username) == hashlib.sha256((self.pinput.text).encode('utf-8')).hexdigest():
          return 'login success'
       else:
          return 'login failed'

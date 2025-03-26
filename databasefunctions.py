@@ -1,6 +1,7 @@
 import sqlite3
 import datetime
 from datetime import date
+import hashlib
 def addbook(title, author, genre, id, copies):
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
@@ -45,6 +46,8 @@ def register(u,p,c):
     cursor = connection.cursor()
     if p == c:
         try:
+            p = hashlib.sha256(p.encode('utf-8')).hexdigest()
+            print(p)
             userdata = (u,p)
             cursor.execute("CREATE TABLE IF NOT EXISTS users (username TEXT NOT NULL PRIMARY KEY, password TEXT NOT NULL, loggedin TEXT NOT NULL)")
             cursor.execute('INSERT INTO users VALUES (?, ?, "' + "False" + '")',userdata)
@@ -74,10 +77,10 @@ def borrow(id, date):
         idcursor.execute('SELECT borrowid FROM Borrowed')
         borrowed = idcursor.fetchall()
         borrowid = 0
-        for i in borrowed:
+        for i in (0,len(borrowed)):
             try:
-                if int((borrowed[0])[i]) >= borrowid:
-                    borrowid = int((borrowed[0])[i]) + 1
+                if int((borrowed[i-1])[0]) >= borrowid:
+                    borrowid = int((borrowed[i-1])[0]) + 1
             except:
                 borrowid = 1
         dateout = date.split(',')
@@ -138,14 +141,13 @@ def changecopies(ID, Copies):
     except:
         return('Error, ID is not in inventory')
     return('inventory succesfully updated')
-#updates the inventory table so the number of copies is the entered number, if it fails it says that the id is not in inventory which is the msot likely cause of error
+#updates the inventory table so the number of copies is the entered number, if it fails it says that the id is not in inventory which is the most likely cause of error
 def viewborrowed():
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
     try:
         cursor.execute('SELECT title, id, user, dateout FROM borrowed')
         info = cursor.fetchall()
-        print(info)
         return(info)
     except:
         connection.close()
@@ -155,9 +157,6 @@ def getresults(title, genre, author):
     try:
         connection = sqlite3.connect("Testinventory.db")
         cursor = connection.cursor()
-        print(title)
-        print(genre)
-        print(author)
         if title == '':
             title = '%'
         if genre == '':
