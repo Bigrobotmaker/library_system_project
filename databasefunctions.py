@@ -47,7 +47,6 @@ def register(u,p,c):
     if p == c:
         try:
             p = hashlib.sha256(p.encode('utf-8')).hexdigest()
-            print(p)
             userdata = (u,p)
             cursor.execute("CREATE TABLE IF NOT EXISTS users (username TEXT NOT NULL PRIMARY KEY, password TEXT NOT NULL, loggedin TEXT NOT NULL)")
             cursor.execute('INSERT INTO users VALUES (?, ?, "' + "False" + '")',userdata)
@@ -57,7 +56,7 @@ def register(u,p,c):
         return('registration successful')
     else:
         return('passwords do not match')
-#first checks if the password matches the confirm password, if not, returns that it doesnt, if it does it then adds the information to the users table
+#first checks if the password matches the confirm password, if not, returns that it doesnt, if it does it then adds the information to the users table, hashes the password to increase security
 def borrow(id, date):
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
