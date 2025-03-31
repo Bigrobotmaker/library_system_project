@@ -145,7 +145,7 @@ def viewborrowed():
     connection = sqlite3.connect("Testinventory.db")
     cursor = connection.cursor()
     try:
-        cursor.execute('SELECT title, id, user, dateout FROM borrowed')
+        cursor.execute('SELECT title, id, user, dateout, due FROM borrowed')
         info = cursor.fetchall()
         return(info)
     except:

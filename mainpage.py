@@ -307,7 +307,7 @@ class application(App):
       else:
          for item in range(0,len(info)):
             item = int(item)
-            self.borrowedview.add_widget(Label(text = ((info[item-1])[0]) + '\n book ID: ' + ((info[item-1])[1]) + '\n borrowed by ' + ((info[item-1])[2]) + '\n on ' + ((info[item-1])[3]), size_hint_y=None, height = 100))
+            self.borrowedview.add_widget(Label(text = ((info[item-1])[0]) + '\n book ID: ' + ((info[item-1])[1]) + '\n borrowed by ' + ((info[item-1])[2]) + '\n on ' + ((info[item-1])[3]) +'\n due ' + ((info[item-1])[4]), size_hint_y=None, height = 100))
       self.scrolling.add_widget(self.borrowedview)
       self.scrollscreenB.add_widget(self.scrolling)
       self.sm.add_widget(self.scrollscreenB)
