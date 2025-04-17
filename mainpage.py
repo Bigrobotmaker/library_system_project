@@ -93,7 +93,7 @@ class application(App):
       self.bookadd.add_widget(self.genre)
       self.bookadd.add_widget(self.id)
       self.bookadd.add_widget(self.copies)
-      self.bookadd.add_widget(Button(text = 'add to database', on_press = self.addbook(self.titleinput.text, self.author.text, self.genre.text, self.id.text, self.copies.text)))
+      self.bookadd.add_widget(Button(text = 'add to database', on_press = lambda x:self.addbook(self.titleinput.text, self.author.text, self.genre.text, self.id.text, self.copies.text)))
       self.bookadd.add_widget(Button(text = 'return to admin', on_press = self.bookaddswap))
       self.screenB.add_widget(self.bookadd)
       self.sm.add_widget(self.screenB)
